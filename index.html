@@ -18,15 +18,15 @@
                     },
                     colors: {
                         brand: {
-                            950: '#041f1e',
-                            900: '#063331',
-                            800: '#0b4a46',
-                            700: '#0f625c',
-                            600: '#137c74',
+                            950: '#032b29',
+                            900: '#063d3a',
+                            800: '#0b524e',
+                            700: '#0f6a65',
+                            600: '#13827b',
                             500: '#14b8a6',
                             400: '#2dd4bf',
-                            100: '#ccfbf1',
-                            50: '#f0fdfa',
+                            100: '#d7f3ef',
+                            50: '#eef9f8',
                         }
                     }
                 }
@@ -35,8 +35,8 @@
     </script>
     <style>
         body {
-            background-color: #f4f7f8;
-            color: #1e293b;
+            background-color: #eef8f7;
+            color: #0f2928;
             -webkit-tap-highlight-color: transparent;
         }
         /* Custom Scrollbar */
@@ -45,14 +45,39 @@
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #e6f4f2;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #b9dcd8;
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #8ec2bc;
+        }
+        /* Diagonal Stripes for Bar & Donut Charts (Reference Style) */
+        .stripe-lime {
+            background-color: #cdeba7;
+            background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45) 0, rgba(255,255,255,0.45) 3px, transparent 3px, transparent 7px);
+        }
+        .stripe-mint {
+            background-color: #8fd3c8;
+            background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45) 0, rgba(255,255,255,0.45) 3px, transparent 3px, transparent 7px);
+        }
+        .stripe-coral {
+            background-color: #f4b2b0;
+            background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45) 0, rgba(255,255,255,0.45) 3px, transparent 3px, transparent 7px);
+        }
+        .stripe-periwinkle {
+            background-color: #b5bcf2;
+            background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45) 0, rgba(255,255,255,0.45) 3px, transparent 3px, transparent 7px);
+        }
+        .stripe-sand {
+            background-color: #e6c69c;
+            background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45) 0, rgba(255,255,255,0.45) 3px, transparent 3px, transparent 7px);
+        }
+        .stripe-orchid {
+            background-color: #d8a6ea;
+            background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45) 0, rgba(255,255,255,0.45) 3px, transparent 3px, transparent 7px);
         }
         /* Shift Cell Animation & Styling */
         .shift-cell {
@@ -87,139 +112,156 @@
         }
     </style>
 </head>
-<body class="antialiased selection:bg-brand-500 selection:text-white">
+<body class="antialiased selection:bg-brand-950 selection:text-white">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- Custom Confirmation / Input Modal Container -->
-    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden items-center justify-center p-4 transition-opacity">
-        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all">
+    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden items-center justify-center p-4 transition-opacity">
+        <div id="modal-content" class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all">
             <!-- Dynamic Modal Content -->
         </div>
     </div>
 
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-hidden bg-[#eef8f7]">
         <!-- Mobile Sidebar Backdrop -->
-        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden lg:hidden"></div>
+        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 z-20 hidden lg:hidden"></div>
 
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-gradient-to-b from-brand-950 via-brand-900 to-brand-950 text-white flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static shrink-0 shadow-xl">
+        <!-- Soft Mint Light Sidebar Navigation (Inspired by Reference) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-68 bg-[#f4fbfa] border-r border-teal-900/10 text-slate-800 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static shrink-0">
             <!-- Brand Header -->
-            <div class="p-5 border-b border-white/10 flex items-center justify-between">
+            <div class="px-6 pt-6 pb-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-brand-500/20 text-brand-950 font-extrabold text-xl">
-                        <i class="fa-solid fa-heart-pulse"></i>
+                    <div class="w-9 h-9 rounded-full border-[2.5px] border-brand-950 flex items-center justify-center text-brand-950 font-black text-base relative">
+                        <i class="fa-solid fa-plus text-sm"></i>
+                        <span class="w-2 h-2 rounded-full bg-[#eef8f7] absolute -top-0.5 -right-0.5"></span>
                     </div>
                     <div>
-                        <div class="flex items-center gap-2">
-                            <h1 class="font-extrabold text-lg tracking-tight text-white">Karu Siap</h1>
-                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-400/30">v2.6</span>
-                        </div>
-                        <p class="text-xs text-slate-300/80 font-medium">Ruang Dahlia • RSUD dr. Abdul Rivai</p>
+                        <h1 class="font-extrabold text-xl tracking-tight text-brand-950 leading-none">Karu Siap</h1>
+                        <p class="text-[11px] text-slate-500 font-medium mt-0.5">Ruang Dahlia • Berau</p>
                     </div>
                 </div>
-                <button onclick="toggleSidebar()" class="lg:hidden text-slate-300 hover:text-white p-2">
+                <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-brand-950 p-2">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <!-- User Profile Card -->
-            <div class="px-4 py-3.5 mx-3 mt-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-brand-600 border-2 border-brand-400 flex items-center justify-center font-bold text-sm shrink-0">
-                    TN
+            <!-- Navigation Links (Grouped like Reference Menu) -->
+            <nav class="flex-1 px-4 py-2 space-y-5 overflow-y-auto" id="nav-menu">
+                <!-- MAIN MENU -->
+                <div class="space-y-1">
+                    <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">MAIN MENU</p>
+                    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left">
+                        <span class="nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"><i class="fa-solid fa-house"></i></span>
+                        <span class="flex-1 truncate">Dashboard</span>
+                    </button>
+                    <button onclick="switchTab('jadwal')" data-tab="jadwal" class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left">
+                        <span class="nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"><i class="fa-solid fa-calendar-days"></i></span>
+                        <span class="flex-1 truncate">Jadwal Dinas</span>
+                        <span id="badge-conflict" class="hidden px-1.5 py-0.5 text-[10px] font-bold bg-rose-500 text-white rounded-full">!</span>
+                    </button>
+                    <button onclick="switchTab('beban')" data-tab="beban" class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left">
+                        <span class="nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"><i class="fa-solid fa-calculator"></i></span>
+                        <span class="flex-1 truncate">Beban Kerja</span>
+                    </button>
                 </div>
-                <div class="min-w-0">
-                    <p class="text-sm font-bold text-white truncate">Ns. Taslim Nur, S.Kep</p>
-                    <p class="text-[11px] text-brand-400 font-medium truncate">Kepala Ruangan • Ruang Dahlia</p>
-                    <p class="text-[10px] text-slate-400 truncate">Kabupaten Berau, Kaltim</p>
+
+                <!-- KLINIS & MUTU -->
+                <div class="space-y-1">
+                    <div class="px-3 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+                        <span>KLINIS & MUTU</span>
+                        <i class="fa-solid fa-caret-up text-[9px]"></i>
+                    </div>
+                    <button onclick="switchTab('supervisi')" data-tab="supervisi" class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left">
+                        <span class="nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"><i class="fa-solid fa-clipboard-check"></i></span>
+                        <span class="flex-1 truncate">Supervisi Klinis</span>
+                    </button>
+                    <button onclick="switchTab('mutu')" data-tab="mutu" class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left">
+                        <span class="nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"><i class="fa-solid fa-chart-simple"></i></span>
+                        <span class="flex-1 truncate">Indikator Mutu</span>
+                    </button>
+                    <button onclick="switchTab('rtl')" data-tab="rtl" class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left">
+                        <span class="nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"><i class="fa-solid fa-list-check"></i></span>
+                        <span class="flex-1 truncate">Rencana & RTL</span>
+                    </button>
                 </div>
-            </div>
 
-            <!-- Navigation Links (7 Core Modules) -->
-            <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" id="nav-menu">
-                <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Menu Utama (7 Modul)</p>
-                
-                <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left">
-                    <span class="w-6 text-center"><i class="fa-solid fa-chart-pie"></i></span>
-                    <span class="flex-1">1. Dashboard Administrasi</span>
-                </button>
-
-                <button onclick="switchTab('jadwal')" data-tab="jadwal" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left">
-                    <span class="w-6 text-center"><i class="fa-solid fa-calendar-days"></i></span>
-                    <span class="flex-1">2. Jadwal Dinas & Kehadiran</span>
-                    <span id="badge-conflict" class="hidden px-1.5 py-0.5 text-[10px] font-bold bg-rose-500 text-white rounded-full">!</span>
-                </button>
-
-                <button onclick="switchTab('beban')" data-tab="beban" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left">
-                    <span class="w-6 text-center"><i class="fa-solid fa-calculator"></i></span>
-                    <span class="flex-1">3. Kalkulator Beban Kerja</span>
-                </button>
-
-                <button onclick="switchTab('supervisi')" data-tab="supervisi" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left">
-                    <span class="w-6 text-center"><i class="fa-solid fa-clipboard-check"></i></span>
-                    <span class="flex-1">4. Supervisi Keperawatan</span>
-                </button>
-
-                <button onclick="switchTab('mutu')" data-tab="mutu" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left">
-                    <span class="w-6 text-center"><i class="fa-solid fa-chart-line"></i></span>
-                    <span class="flex-1">5. Monitoring Mutu (INM)</span>
-                </button>
-
-                <button onclick="switchTab('rtl')" data-tab="rtl" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left">
-                    <span class="w-6 text-center"><i class="fa-solid fa-list-check"></i></span>
-                    <span class="flex-1">6. Rencana Kerja & RTL</span>
-                </button>
-
-                <button onclick="switchTab('keselamatan')" data-tab="keselamatan" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left">
-                    <span class="w-6 text-center"><i class="fa-solid fa-shield-heart"></i></span>
-                    <span class="flex-1">7. Keselamatan, SDM & Laporan</span>
-                    <span id="badge-str" class="hidden px-1.5 py-0.5 text-[10px] font-bold bg-amber-500 text-slate-950 rounded-full">0</span>
-                </button>
+                <!-- TATA KELOLA -->
+                <div class="space-y-1">
+                    <div class="px-3 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+                        <span>TATA KELOLA</span>
+                        <i class="fa-solid fa-caret-up text-[9px]"></i>
+                    </div>
+                    <button onclick="activeSafetySubTab='keselamatan'; switchTab('keselamatan')" data-tab="keselamatan" class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left">
+                        <span class="nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"><i class="fa-solid fa-shield-heart"></i></span>
+                        <span class="flex-1 truncate">Keselamatan & SDM</span>
+                        <span id="badge-str" class="hidden px-1.5 py-0.5 text-[10px] font-bold bg-amber-400 text-brand-950 rounded-full">0</span>
+                    </button>
+                    <button onclick="openDirectReport()" class="w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left text-slate-600 hover:bg-teal-900/5 hover:text-brand-950">
+                        <span class="w-7 h-7 rounded-full bg-teal-900/5 text-slate-600 flex items-center justify-center text-xs"><i class="fa-solid fa-file-lines"></i></span>
+                        <span class="flex-1 truncate">Laporan Kop RS</span>
+                    </button>
+                    <button onclick="openEditProfileModal()" class="w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left text-slate-600 hover:bg-teal-900/5 hover:text-brand-950">
+                        <span class="w-7 h-7 rounded-full bg-teal-900/5 text-slate-600 flex items-center justify-center text-xs"><i class="fa-solid fa-gear"></i></span>
+                        <span class="flex-1 truncate">Pengaturan Karu</span>
+                    </button>
+                </div>
             </nav>
 
-            <!-- Footer Actions -->
-            <div class="p-4 border-t border-white/10 space-y-2">
-                <button onclick="resetDemoData()" class="w-full py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-medium text-slate-300 flex items-center justify-center gap-2 transition">
-                    <i class="fa-solid fa-rotate"></i> Reset Data Default Ruang Dahlia
+            <!-- Footer Reset -->
+            <div class="p-4 border-t border-teal-900/10">
+                <button onclick="resetDemoData()" class="w-full py-2 px-3 rounded-full bg-white hover:bg-teal-50 border border-teal-900/10 text-[11px] font-bold text-slate-600 flex items-center justify-center gap-2 transition shadow-2xs">
+                    <i class="fa-solid fa-rotate text-brand-700"></i> Reset Data Default
                 </button>
             </div>
         </aside>
 
         <!-- Main Workspace -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-            <!-- Top Header Bar -->
-            <header class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4 shrink-0 z-10">
-                <div class="flex items-center gap-3">
-                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100">
-                        <i class="fa-solid fa-bars text-lg"></i>
+            <!-- Top Header Bar (Pill Search + Notification + Profile like Reference) -->
+            <header class="px-4 sm:px-8 pt-5 pb-3 flex items-center justify-between gap-4 shrink-0 z-10">
+                <div class="flex items-center gap-3 flex-1 max-w-md">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2.5 rounded-full bg-white border border-teal-900/10 text-slate-700 hover:bg-teal-50">
+                        <i class="fa-solid fa-bars text-sm"></i>
                     </button>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span id="header-module-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-brand-50 text-brand-700 border border-brand-200">Fitur 01 / 07</span>
-                            <span class="hidden sm:inline text-xs text-slate-400">•</span>
-                            <span class="hidden sm:inline text-xs font-medium text-slate-500" id="current-date-display">Kamis, 19 November 2026</span>
-                        </div>
-                        <h2 id="header-title" class="text-lg sm:text-xl font-extrabold text-slate-800 tracking-tight mt-0.5">Dashboard Administrasi Ruangan</h2>
+                    <!-- Pill Search Input -->
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="global-search-input" onkeyup="handleGlobalSearch(this.value)" placeholder="Cari perawat, jadwal, atau indikator..." class="w-full pl-10 pr-9 py-2.5 rounded-full bg-[#f7fcfb] border border-teal-900/10 text-xs font-medium text-slate-700 placeholder-slate-400 outline-none focus:bg-white focus:border-brand-600 transition shadow-2xs">
+                        <i class="fa-solid fa-sliders absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     </div>
                 </div>
 
-                <!-- Quick Header Actions -->
-                <div class="flex items-center gap-2">
-                    <button onclick="switchTab('jadwal')" class="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-xs transition">
-                        <i class="fa-solid fa-calendar-check"></i> Kelola Jadwal
-                    </button>
-                    <button onclick="switchTab('beban')" class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
-                        <i class="fa-solid fa-calculator text-brand-600"></i> Beban Kerja
-                    </button>
-                    <button onclick="openDirectReport()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition" title="Pusat Laporan Ber-Kop RS">
-                        <i class="fa-solid fa-print"></i> <span class="hidden sm:inline">Laporan RS</span>
+                <!-- Right Pills: Notification + Language/Unit + Profile -->
+                <div class="flex items-center gap-3">
+                    <!-- Notification & Unit Pill -->
+                    <div class="hidden sm:flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-[#f7fcfb] border border-teal-900/10 shadow-2xs">
+                        <button onclick="activeSafetySubTab='sdm'; switchTab('keselamatan')" class="relative text-brand-950 hover:text-brand-700 transition" title="Notifikasi STR/SIP">
+                            <i class="fa-solid fa-bell text-sm"></i>
+                            <span class="w-2 h-2 rounded-full bg-rose-500 absolute -top-0.5 -right-0.5"></span>
+                        </button>
+                        <span class="h-3.5 w-px bg-slate-200"></span>
+                        <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+                            ID <i class="fa-solid fa-globe text-slate-400 text-[11px]"></i>
+                        </span>
+                    </div>
+
+                    <!-- User Profile Trigger (Clickable to Edit Karu Name) -->
+                    <button onclick="openEditProfileModal()" title="Klik untuk ganti nama Kepala Ruangan" class="flex items-center gap-2.5 text-left group rounded-full pr-2 py-1 hover:bg-white/70 transition">
+                        <div id="sidebar-user-initials" class="w-9 h-9 rounded-full bg-brand-950 text-white font-extrabold text-xs flex items-center justify-center shadow-xs shrink-0">
+                            TN
+                        </div>
+                        <div class="hidden md:block min-w-0">
+                            <p id="sidebar-user-name" class="text-xs font-extrabold text-brand-950 truncate group-hover:underline">Ns. Taslim Nur, S.Kep</p>
+                            <p id="sidebar-user-room" class="text-[11px] text-slate-500 truncate">karu.dahlia@rsudrivai.go.id</p>
+                        </div>
                     </button>
                 </div>
             </header>
 
             <!-- Dynamic Content Viewport -->
-            <main id="main-content" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+            <main id="main-content" class="flex-1 overflow-y-auto px-4 sm:px-8 pb-8 pt-2 space-y-5">
                 <!-- Rendered dynamically via JS -->
             </main>
         </div>
@@ -481,6 +523,18 @@
         }
 
         function updateSidebarBadges() {
+            const nameEl = document.getElementById('sidebar-user-name');
+            const initialsEl = document.getElementById('sidebar-user-initials');
+            const roomEl = document.getElementById('sidebar-user-room');
+            if (nameEl && appData?.ruangan) {
+                nameEl.textContent = appData.ruangan.karu;
+                const cleanName = appData.ruangan.karu.replace(/^(Ns\.|Dr\.|Hj\.|H\.)\s*/gi, '').trim();
+                const parts = cleanName.split(/\s+/);
+                const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : cleanName.slice(0, 2).toUpperCase();
+                if (initialsEl) initialsEl.textContent = initials || 'KR';
+                if (roomEl) roomEl.textContent = `${appData.ruangan.nama.split('(')[0].trim()} • RSUD dr. Abdul Rivai`;
+            }
+
             const conflicts = detectScheduleConflicts();
             const conflictBadge = document.getElementById('badge-conflict');
             if (conflictBadge) {
@@ -585,16 +639,15 @@
         function switchTab(tabId) {
             activeTab = tabId;
             document.querySelectorAll('.nav-btn').forEach(btn => {
+                const iconSpan = btn.querySelector('.nav-icon');
                 if (btn.dataset.tab === tabId) {
-                    btn.className = 'nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all text-left bg-gradient-to-r from-brand-500 to-emerald-500 text-brand-950 shadow-md shadow-brand-500/20';
+                    btn.className = 'nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left bg-brand-950 text-white shadow-sm';
+                    if (iconSpan) iconSpan.className = 'nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs bg-white text-brand-950';
                 } else {
-                    btn.className = 'nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left text-slate-300 hover:bg-white/10 hover:text-white';
+                    btn.className = 'nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-full text-xs font-bold transition-all text-left text-slate-600 hover:bg-teal-900/5 hover:text-brand-950';
+                    if (iconSpan) iconSpan.className = 'nav-icon w-7 h-7 rounded-full flex items-center justify-center text-xs bg-teal-900/5 text-slate-600';
                 }
             });
-
-            const meta = MODULE_META[tabId];
-            document.getElementById('header-module-badge').textContent = meta.badge;
-            document.getElementById('header-title').textContent = meta.title;
 
             // Close sidebar on mobile after click
             if (window.innerWidth < 1024) {
@@ -605,6 +658,14 @@
             }
 
             renderCurrentTab();
+        }
+
+        let globalSearchFilter = '';
+        function handleGlobalSearch(val) {
+            globalSearchFilter = val.trim().toLowerCase();
+            if (activeTab === 'dashboard') {
+                renderCurrentTab();
+            }
         }
 
         function openDirectReport() {
@@ -627,7 +688,7 @@
         }
 
         // =========================================================================
-        // MODUL 1: DASHBOARD ADMINISTRASI (SATU LAYAR SEMUA KONDISI RUANGAN)
+        // MODUL 1: DASHBOARD ADMINISTRASI (AESTHETIC PASTEL CARDS + CHARTS)
         // =========================================================================
         function renderDashboard() {
             const sched = ensureMonthSchedule(2026, 10);
@@ -655,1384 +716,309 @@
                 return q.tipe === 'min' ? cap >= q.target : cap <= q.target;
             }).length;
             const mutuPct = Math.round((tercapaiMutu / appData.qualityIndicators.length) * 100);
-            const avgSup = appData.supervisions.length > 0
-                ? Math.round(appData.supervisions.reduce((a, b) => a + b.skor, 0) / appData.supervisions.length)
-                : 0;
 
             // STR Kadaluarsa
             const expiringNurses = getExpiringSTRs();
 
+            // Filtered nurses for Recent / Formasi table
+            const visibleNurses = appData.nurses.filter(n =>
+                !globalSearchFilter ||
+                n.nama.toLowerCase().includes(globalSearchFilter) ||
+                n.jabatan.toLowerCase().includes(globalSearchFilter) ||
+                n.pk.toLowerCase().includes(globalSearchFilter)
+            );
+
+            // Weekly Shift Hours Bar Data (Mon - Sun)
+            const weekBars = [
+                { day: 'Sen', hours: 54, cls: 'stripe-sand', dot: 'bg-amber-400' },
+                { day: 'Sel', hours: 68, cls: 'stripe-orchid', dot: 'bg-purple-400' },
+                { day: 'Rab', hours: 86, cls: 'stripe-lime', dot: 'bg-lime-500', active: true, badge: `${dinasJagaTotal} Staf Jaga` },
+                { day: 'Kam', hours: 74, cls: 'stripe-mint', dot: 'bg-teal-400' },
+                { day: 'Jum', hours: 62, cls: 'stripe-coral', dot: 'bg-rose-400' },
+                { day: 'Sab', hours: 48, cls: 'stripe-periwinkle', dot: 'bg-indigo-400' }
+            ];
+
             return `
-                <!-- Banner Identitas Ruangan -->
-                <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-teal-800 rounded-2xl p-5 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <!-- Greeting Row (Like "Welcome Code Astro!" + Pill Action Button) -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <div class="flex items-center gap-2 text-brand-300 text-xs font-bold uppercase tracking-wider">
-                            <i class="fa-solid fa-hospital"></i>
-                            <span>${appData.ruangan.rs} • ${appData.ruangan.kabupaten}</span>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-extrabold mt-1">${appData.ruangan.nama}</h3>
-                        <p class="text-xs sm:text-sm text-slate-200 mt-1">Kepala Ruangan: <strong class="text-white">${appData.ruangan.karu}</strong> • Satu layar memantau seluruh kondisi ruangan.</p>
+                        <h2 class="text-2xl sm:text-[26px] font-extrabold text-brand-950 tracking-tight">
+                            Selamat Datang, ${appData.ruangan.karu.split(',')[0]}!
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">${appData.ruangan.nama} • ${appData.ruangan.rs} (Kamis, 19 Nov 2026)</p>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="switchTab('jadwal')" class="px-3.5 py-2 rounded-xl bg-brand-400 hover:bg-brand-300 text-brand-950 text-xs font-extrabold flex items-center gap-2 shadow-sm transition">
-                            <i class="fa-solid fa-calendar-days"></i> Kelola Jadwal Dinas
+                    <div class="flex items-center gap-2">
+                        <button onclick="openEditProfileModal()" class="px-4 py-2.5 rounded-full bg-white hover:bg-teal-50 text-brand-950 border border-teal-900/15 text-xs font-bold transition shadow-2xs">
+                            <i class="fa-solid fa-pen text-[10px] mr-1"></i> Ganti Nama Karu
                         </button>
-                        <button onclick="switchTab('beban')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold flex items-center gap-2 transition">
-                            <i class="fa-solid fa-calculator"></i> Kalkulator Beban Kerja
-                        </button>
-                        <button onclick="switchTab('supervisi')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold flex items-center gap-2 transition">
-                            <i class="fa-solid fa-clipboard-check"></i> Input Supervisi
+                        <button onclick="switchTab('jadwal')" class="px-5 py-2.5 rounded-full bg-brand-950 hover:bg-brand-900 text-white text-xs font-bold transition shadow-sm">
+                            Kelola Jadwal
                         </button>
                     </div>
                 </div>
 
-                <!-- 4 Kartu Metrik Utama -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <!-- Card 1: Total Tenaga Perawat -->
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Tenaga Perawat</span>
-                            <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                                <i class="fa-solid fa-user-nurse"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3 flex items-baseline gap-2">
-                            <span class="text-3xl font-extrabold text-slate-800">${totalPerawat}</span>
-                            <span class="text-sm font-semibold text-slate-500">Orang</span>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold">
-                            <span class="text-emerald-600 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${aktifCount} Aktif</span>
-                            <span class="text-rose-500">${cutiCount} Cuti / Izin</span>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: Dinas Hari Ini -->
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Dinas Hari Ini (Tgl ${TODAY_DAY})</span>
-                            <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3 flex items-baseline gap-2">
-                            <span class="text-3xl font-extrabold text-slate-800">${dinasJagaTotal}</span>
-                            <span class="text-sm font-semibold text-slate-500">Perawat Jaga</span>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-1.5 flex-wrap">
-                            <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800">P: ${countP}</span>
-                            <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800">S: ${countS}</span>
-                            <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-100 text-indigo-800">M: ${countM}</span>
-                            <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-600">L/C: ${countL}</span>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: BOR & Ketersediaan Tempat Tidur -->
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">BOR & Keterisian Bed</span>
-                            <button onclick="openEditBorModal()" class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-100 flex items-center justify-center transition" title="Update BOR">
-                                <i class="fa-solid fa-bed-pulse"></i>
-                            </button>
-                        </div>
-                        <div class="mt-3 flex items-baseline justify-between">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-extrabold text-slate-800">${borPct}%</span>
-                                <span class="text-xs font-semibold text-slate-500">(${appData.ruangan.terisiBed}/${appData.ruangan.kapasitasBed} Bed)</span>
-                            </div>
-                            <button onclick="openEditBorModal()" class="text-[11px] font-bold text-brand-600 hover:underline">Ubah</button>
-                        </div>
-                        <div class="mt-3">
-                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-brand-500 rounded-full transition-all" style="width: ${Math.min(100, borPct)}%"></div>
-                            </div>
-                            <p class="text-[11px] text-slate-400 mt-1">Standar ideal Kemenkes: 60% – 85%</p>
-                        </div>
-                    </div>
-
-                    <!-- Card 4: Kepatuhan Mutu Ruangan -->
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Kepatuhan Mutu Ruangan</span>
-                            <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                                <i class="fa-solid fa-award"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3 flex items-baseline gap-2">
-                            <span class="text-3xl font-extrabold text-slate-800">${mutuPct}%</span>
-                            <span class="text-xs font-semibold text-slate-500">(${tercapaiMutu}/${appData.qualityIndicators.length} Indikator Tercapai)</span>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold">
-                            <span class="text-slate-600">Rata-rata Supervisi: <strong class="text-brand-700">${avgSup}%</strong></span>
-                            <button onclick="switchTab('mutu')" class="text-brand-600 hover:underline font-bold">Lihat INM →</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Banner Notifikasi STR / SIP Kadaluarsa -->
+                <!-- Notifikasi STR/SIP Kadaluarsa (Compact Pill Alert) -->
                 ${expiringNurses.length > 0 ? `
-                <div class="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-                    <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-extrabold text-amber-900">Pemberitahuan Kadaluarsa STR / SIP Tenaga Keperawatan (${expiringNurses.length} Perawat)</h4>
-                            <p class="text-xs text-amber-800 mt-0.5 leading-relaxed">
-                                Terdapat dokumen kredensial yang kadaluarsa atau mendekati jatuh tempo (&lt; 60 hari): 
-                                ${expiringNurses.map(n => `<strong>${n.nama}</strong> (${n.diffDays < 0 ? `<span class="text-rose-700 underline">Kadaluarsa ${n.strExp}</span>` : `Exp: ${n.strExp} • sisa ${n.diffDays} hari`})`).join('; ')}.
-                            </p>
-                        </div>
+                <div class="bg-[#fde8e8] border border-rose-300/70 rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5 text-xs text-rose-950">
+                        <span class="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                        </span>
+                        <span>
+                            <strong>Perhatian STR/SIP (${expiringNurses.length} Perawat):</strong>
+                            ${expiringNurses.map(n => `${n.nama} (${n.diffDays < 0 ? 'Kadaluarsa' : `sisa ${n.diffDays} hari`})`).join(' • ')}
+                        </span>
                     </div>
-                    <button onclick="activeSafetySubTab='sdm'; switchTab('keselamatan')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shrink-0 transition shadow-xs">
+                    <button onclick="activeSafetySubTab='sdm'; switchTab('keselamatan')" class="px-3.5 py-1.5 rounded-full bg-brand-950 text-white text-[11px] font-bold shrink-0 self-start sm:self-auto">
                         Periksa SDM
                     </button>
                 </div>
                 ` : ''}
 
-                <!-- Grid Konten Utama: Tabel Formasi Hari Ini (Kiri) + Mutu & RTL (Kanan) -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- Tabel Formasi Dinas Hari Ini -->
-                    <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col">
-                        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
-                            <div>
-                                <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-users-viewfinder text-brand-600"></i> Formasi Dinas Hari Ini — Tgl ${TODAY_DAY} Nov 2026
-                                </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Daftar perawat penanggung jawab shift pelayanan Ruang Dahlia</p>
+                <!-- Top Section: Ringkasan Kondisi Ruangan (4 Pastel Metric Cards like Reference) -->
+                <div class="bg-[#f8fdfc] rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h3 class="text-base font-extrabold text-brand-950">Ringkasan Administrasi Ruangan</h3>
+                        <button onclick="openEditBorModal()" class="px-3.5 py-1.5 rounded-full bg-white hover:bg-teal-50 border border-teal-900/10 text-xs font-bold text-slate-700 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-calendar text-brand-950"></i> Nov 2026 • Update BOR <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                        <!-- Pastel Card 1: Lime Green (Total Tenaga Perawat) -->
+                        <div class="rounded-2xl p-4 bg-[#d9f2b4] text-brand-950 relative overflow-hidden flex flex-col justify-between min-h-[138px]">
+                            <div class="flex items-center justify-between">
+                                <span class="w-7 h-7 rounded-full bg-brand-950 text-white flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-user-nurse"></i>
+                                </span>
+                                <button onclick="activeSafetySubTab='sdm'; switchTab('keselamatan')" class="w-7 h-7 rounded-full border border-brand-950/20 flex items-center justify-center text-xs hover:bg-black/5">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
                             </div>
-                            <button onclick="switchTab('jadwal')" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
-                                Buka Jadwal Lengkap <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            <div class="mt-2 z-10">
+                                <p class="text-xs font-semibold text-brand-950/75">Total Tenaga Perawat</p>
+                                <p class="text-2xl font-extrabold tracking-tight mt-0.5">${totalPerawat} Orang</p>
+                                <p class="text-[11px] font-semibold text-brand-950/70 mt-0.5">${aktifCount} Aktif • ${cutiCount} Cuti/Izin</p>
+                            </div>
+                            <!-- Mini Vertical Bars Decoration -->
+                            <div class="absolute right-4 bottom-3 flex items-end gap-1.5 h-14 opacity-85 pointer-events-none">
+                                <span class="w-2.5 h-6 rounded-full bg-brand-950/15"></span>
+                                <span class="w-2.5 h-9 rounded-full bg-brand-950/20"></span>
+                                <span class="w-2.5 h-13 rounded-full bg-gradient-to-t from-brand-950/30 to-brand-950"></span>
+                                <span class="w-2.5 h-8 rounded-full bg-brand-950/20"></span>
+                            </div>
+                        </div>
+
+                        <!-- Pastel Card 2: Soft Teal (Dinas Hari Ini) -->
+                        <div class="rounded-2xl p-4 bg-[#a8dfd6] text-brand-950 relative overflow-hidden flex flex-col justify-between min-h-[138px]">
+                            <div class="flex items-center justify-between">
+                                <span class="w-7 h-7 rounded-full bg-brand-950 text-white flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-clock"></i>
+                                </span>
+                                <button onclick="switchTab('jadwal')" class="w-7 h-7 rounded-full border border-brand-950/20 flex items-center justify-center text-xs hover:bg-black/5">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2 z-10">
+                                <p class="text-xs font-semibold text-brand-950/75">Dinas Hari Ini (Tgl ${TODAY_DAY})</p>
+                                <p class="text-2xl font-extrabold tracking-tight mt-0.5">${dinasJagaTotal} Perawat</p>
+                                <p class="text-[11px] font-semibold text-brand-950/75 mt-0.5">P:${countP} • S:${countS} • M:${countM} • L:${countL}</p>
+                            </div>
+                            <div class="absolute right-4 bottom-3 flex items-end gap-1.5 h-14 opacity-85 pointer-events-none">
+                                <span class="w-2.5 h-5 rounded-full bg-brand-950/15"></span>
+                                <span class="w-2.5 h-12 rounded-full bg-gradient-to-t from-brand-950/30 to-brand-950"></span>
+                                <span class="w-2.5 h-8 rounded-full bg-brand-950/20"></span>
+                                <span class="w-2.5 h-6 rounded-full bg-brand-950/15"></span>
+                            </div>
+                        </div>
+
+                        <!-- Pastel Card 3: Soft Coral Pink (BOR Tempat Tidur) -->
+                        <div class="rounded-2xl p-4 bg-[#f5b8b8] text-brand-950 relative overflow-hidden flex flex-col justify-between min-h-[138px]">
+                            <div class="flex items-center justify-between">
+                                <span class="w-7 h-7 rounded-full bg-brand-950 text-white flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-bed-pulse"></i>
+                                </span>
+                                <button onclick="openEditBorModal()" class="w-7 h-7 rounded-full border border-brand-950/20 flex items-center justify-center text-xs hover:bg-black/5" title="Ubah BOR">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2 z-10">
+                                <p class="text-xs font-semibold text-brand-950/75">BOR Keterisian Bed</p>
+                                <p class="text-2xl font-extrabold tracking-tight mt-0.5">${borPct}.00%</p>
+                                <p class="text-[11px] font-semibold text-brand-950/75 mt-0.5">${appData.ruangan.terisiBed}/${appData.ruangan.kapasitasBed} Bed Terisi</p>
+                            </div>
+                            <div class="absolute right-4 bottom-3 flex items-end gap-1.5 h-14 opacity-85 pointer-events-none">
+                                <span class="w-2.5 h-12 rounded-full bg-gradient-to-t from-brand-950/30 to-brand-950"></span>
+                                <span class="w-2.5 h-7 rounded-full bg-brand-950/20"></span>
+                                <span class="w-2.5 h-9 rounded-full bg-brand-950/20"></span>
+                                <span class="w-2.5 h-5 rounded-full bg-brand-950/15"></span>
+                            </div>
+                        </div>
+
+                        <!-- Pastel Card 4: Periwinkle Lavender (Kepatuhan Mutu INM) -->
+                        <div class="rounded-2xl p-4 bg-[#bec3f7] text-brand-950 relative overflow-hidden flex flex-col justify-between min-h-[138px]">
+                            <div class="flex items-center justify-between">
+                                <span class="w-7 h-7 rounded-full bg-brand-950 text-white flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-award"></i>
+                                </span>
+                                <button onclick="switchTab('mutu')" class="w-7 h-7 rounded-full border border-brand-950/20 flex items-center justify-center text-xs hover:bg-black/5">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2 z-10">
+                                <p class="text-xs font-semibold text-brand-950/75">Capaian Mutu (INM)</p>
+                                <p class="text-2xl font-extrabold tracking-tight mt-0.5">${mutuPct}%</p>
+                                <p class="text-[11px] font-semibold text-brand-950/75 mt-0.5">${tercapaiMutu}/${appData.qualityIndicators.length} Indikator Tercapai</p>
+                            </div>
+                            <div class="absolute right-4 bottom-3 flex items-end gap-1.5 h-14 opacity-85 pointer-events-none">
+                                <span class="w-2.5 h-6 rounded-full bg-brand-950/15"></span>
+                                <span class="w-2.5 h-8 rounded-full bg-brand-950/20"></span>
+                                <span class="w-2.5 h-11 rounded-full bg-gradient-to-t from-brand-950/30 to-brand-950"></span>
+                                <span class="w-2.5 h-7 rounded-full bg-brand-950/20"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Charts Section: Graph Report (Donut) + Total Overview (Striped Bar Chart) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <!-- Left: Donut Chart (Komposisi Ketergantungan Pasien & Status RTL) -->
+                    <div class="lg:col-span-5 bg-[#f8fdfc] rounded-3xl p-5 border border-teal-900/10 shadow-2xs flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-base font-extrabold text-brand-950">Komposisi Pasien & Mutu</h3>
+                            <button onclick="switchTab('beban')" class="w-7 h-7 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-white text-xs">
+                                <i class="fa-solid fa-ellipsis"></i>
                             </button>
                         </div>
-                        <div class="overflow-x-auto flex-1">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-                                        <th class="py-3 px-4">Nama Perawat</th>
-                                        <th class="py-3 px-3">Jabatan & PK</th>
-                                        <th class="py-3 px-3 text-center">Shift</th>
-                                        <th class="py-3 px-3">Jam Kerja</th>
-                                        <th class="py-3 px-4 text-right">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100 text-xs">
-                                    ${appData.nurses.map(n => {
-                                        const code = (sched[n.id] && sched[n.id][TODAY_DAY]) || 'L';
-                                        const sc = SHIFT_CONFIG[code] || SHIFT_CONFIG['L'];
-                                        return `
-                                        <tr class="hover:bg-slate-50/80 transition">
-                                            <td class="py-3 px-4">
-                                                <p class="font-bold text-slate-800">${n.nama}</p>
-                                                <p class="text-[10px] text-slate-400">NIP. ${n.nip}</p>
-                                            </td>
-                                            <td class="py-3 px-3">
-                                                <p class="font-semibold text-slate-700">${n.jabatan}</p>
-                                                <span class="inline-block px-1.5 py-0.5 rounded bg-brand-50 text-brand-700 font-bold text-[10px] mt-0.5">${n.pk}</span>
-                                            </td>
-                                            <td class="py-3 px-3 text-center">
-                                                <button onclick="cycleTodayShift('${n.id}')" title="Klik untuk ubah shift hari ini" class="px-2.5 py-1 rounded-lg font-extrabold text-[11px] border ${sc.bg} ${sc.text} ${sc.border} hover:opacity-80 transition">
-                                                    ${sc.label.toUpperCase()}
-                                                </button>
-                                            </td>
-                                            <td class="py-3 px-3 font-medium text-slate-600 whitespace-nowrap">${sc.jam}</td>
-                                            <td class="py-3 px-4 text-right">
-                                                <button onclick="openQuickSupervisiFor('${n.nama}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-brand-600 hover:text-white text-slate-700 font-bold text-[11px] transition">
-                                                    Supervisi
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
+
+                        <!-- SVG Donut Chart with Floating Percentage Pills -->
+                        <div class="relative w-52 h-52 mx-auto my-3 flex items-center justify-center">
+                            <svg viewBox="0 0 120 120" class="w-full h-full -rotate-90">
+                                <!-- Background Ring -->
+                                <circle cx="60" cy="60" r="44" fill="none" stroke="#e2eceb" stroke-width="16" />
+                                <!-- Segment 1: Partial Care (42% - Lime) -->
+                                <circle cx="60" cy="60" r="44" fill="none" stroke="#cdeba7" stroke-width="16" stroke-dasharray="116 276" stroke-dashoffset="0" stroke-linecap="round" />
+                                <!-- Segment 2: Minimal Care (28% - Mint Teal) -->
+                                <circle cx="60" cy="60" r="44" fill="none" stroke="#8fd3c8" stroke-width="16" stroke-dasharray="77 276" stroke-dashoffset="-118" stroke-linecap="round" />
+                                <!-- Segment 3: Total Care (18% - Coral Pink) -->
+                                <circle cx="60" cy="60" r="44" fill="none" stroke="#f4b2b0" stroke-width="16" stroke-dasharray="50 276" stroke-dashoffset="-197" stroke-linecap="round" />
+                            </svg>
+                            <!-- Center Total Label -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                <span class="text-[11px] font-semibold text-slate-400">Total Pasien</span>
+                                <span class="text-2xl font-extrabold text-brand-950">${appData.ruangan.terisiBed} Bed</span>
+                            </div>
+                            <!-- Floating Badges -->
+                            <span class="absolute top-4 left-3 px-2 py-0.5 rounded-full bg-white shadow-sm border border-slate-100 text-[10px] font-extrabold text-brand-950">28%</span>
+                            <span class="absolute top-3 right-4 px-2 py-0.5 rounded-full bg-white shadow-sm border border-slate-100 text-[10px] font-extrabold text-brand-950">18%</span>
+                            <span class="absolute bottom-4 left-4 px-2 py-0.5 rounded-full bg-white shadow-sm border border-slate-100 text-[10px] font-extrabold text-brand-950">42%</span>
+                            <span class="absolute bottom-7 right-1 px-2 py-0.5 rounded-full bg-white shadow-sm border border-slate-100 text-[10px] font-extrabold text-brand-950">12%</span>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="flex flex-wrap items-center justify-center gap-3 text-[11px] font-bold text-slate-600 pt-1">
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#cdeba7]"></span> Partial</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#8fd3c8]"></span> Minimal</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#f4b2b0]"></span> Total Care</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span> Kosong</span>
                         </div>
                     </div>
 
-                    <!-- Kolom Kanan: Ringkasan INM & RTL Ruangan -->
-                    <div class="lg:col-span-5 space-y-6">
-                        <!-- Panel Indikator Mutu Ruangan (INM) -->
-                        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-chart-simple text-brand-600"></i> Indikator Mutu Ruangan (INM)
-                                </h3>
-                                <button onclick="switchTab('mutu')" class="text-xs font-bold text-brand-600 hover:underline">Detail</button>
+                    <!-- Right: Striped Bar Chart (Monitoring Jam & Kehadiran Mingguan) -->
+                    <div class="lg:col-span-7 bg-[#f8fdfc] rounded-3xl p-5 border border-teal-900/10 shadow-2xs flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-base font-extrabold text-brand-950">Monitoring Kehadiran & Jam Dinas Mingguan</h3>
+                                <p class="text-[11px] text-slate-500">Distribusi total jam kerja efektif perawat Ruang Dahlia</p>
                             </div>
-                            <div class="space-y-3.5">
-                                ${appData.qualityIndicators.slice(0, 4).map(q => {
-                                    const pct = q.denominator > 0 ? Number(((q.numerator / q.denominator) * 100).toFixed(2)) : 0;
-                                    const ok = q.tipe === 'min' ? pct >= q.target : pct <= q.target;
-                                    return `
-                                    <div>
-                                        <div class="flex items-center justify-between text-xs mb-1">
-                                            <span class="font-bold text-slate-700 truncate pr-2">${q.nama}</span>
-                                            <span class="font-extrabold shrink-0 ${ok ? 'text-emerald-600' : 'text-rose-600'}">${pct}% <span class="text-slate-400 font-normal">/ ${q.target}%</span></span>
-                                        </div>
-                                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                                            <div class="h-full rounded-full ${ok ? 'bg-emerald-500' : 'bg-rose-500'}" style="width: ${Math.min(100, pct)}%"></div>
-                                        </div>
-                                    </div>
-                                    `;
-                                }).join('')}
-                            </div>
+                            <button onclick="switchTab('jadwal')" class="text-xs font-bold text-brand-700 hover:underline">Lihat Matriks →</button>
                         </div>
 
-                        <!-- Panel Tindak Lanjut & RTL Ruangan -->
-                        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-list-check text-brand-600"></i> Tindak Lanjut & RTL Ruangan
-                                </h3>
-                                <button onclick="switchTab('rtl')" class="text-xs font-bold text-brand-600 hover:underline">Semua (${appData.rtls.length})</button>
+                        <div class="mt-6 pt-6 flex items-end justify-between gap-3 sm:gap-5 h-52 px-2">
+                            <!-- Y-Axis Labels -->
+                            <div class="flex flex-col justify-between h-40 text-[10px] font-bold text-slate-400 pb-5">
+                                <span>90j</span>
+                                <span>70j</span>
+                                <span>50j</span>
+                                <span>30j</span>
+                                <span>0j</span>
                             </div>
-                            <div class="space-y-3">
-                                ${appData.rtls.slice(0, 3).map(r => `
-                                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
-                                        <div class="flex items-start justify-between gap-2">
-                                            <h4 class="text-xs font-extrabold text-slate-800 line-clamp-1">${r.judul}</h4>
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${r.status === 'Selesai' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${r.status}</span>
+
+                            <!-- Capsule Bars -->
+                            <div class="flex-1 grid grid-cols-6 gap-2 sm:gap-4 items-end h-44">
+                                ${weekBars.map(b => `
+                                    <div class="flex flex-col items-center h-full justify-end relative group">
+                                        ${b.active ? `
+                                            <div class="absolute -top-9 z-10 bg-brand-950 text-white px-2.5 py-1 rounded-xl shadow-md text-center whitespace-nowrap">
+                                                <span class="block text-[9px] text-brand-300">Nov, 2026</span>
+                                                <span class="text-xs font-extrabold">${b.badge}</span>
+                                            </div>
+                                        ` : ''}
+                                        <div class="w-8 sm:w-10 h-36 rounded-full bg-slate-200/70 p-0.5 flex items-end relative overflow-hidden">
+                                            <div class="w-full rounded-full ${b.cls} relative transition-all duration-500" style="height: ${b.hours}%">
+                                                <span class="w-2.5 h-2.5 rounded-full ${b.dot} border-2 border-white absolute -top-1 left-1/2 -translate-x-1/2 shadow-2xs"></span>
+                                            </div>
                                         </div>
-                                        <p class="text-[11px] text-slate-500 mt-1 line-clamp-1">${r.tindakan}</p>
-                                        <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200/60 text-[10px] text-slate-500 font-semibold">
-                                            <span>PIC: ${r.pic}</span>
-                                            <span>Tenggat: ${r.tenggat}</span>
-                                        </div>
+                                        <span class="text-[11px] font-bold text-slate-500 mt-2">${b.day}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     </div>
                 </div>
-            `;
-        }
 
-        function cycleTodayShift(nurseId) {
-            const sched = ensureMonthSchedule(2026, 10);
-            const cur = sched[nurseId][TODAY_DAY] || 'L';
-            const next = SHIFT_ORDER[(SHIFT_ORDER.indexOf(cur) + 1) % SHIFT_ORDER.length];
-            sched[nurseId][TODAY_DAY] = next;
-            saveData();
-            renderCurrentTab();
-            showToast(`Shift hari ini diubah menjadi ${SHIFT_CONFIG[next].label}`);
-        }
-
-        function openEditBorModal() {
-            openModal(`
-                <div class="p-6">
-                    <h3 class="text-lg font-extrabold text-slate-800">Update BOR & Ketersediaan Tempat Tidur</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Ruang Dahlia — RSUD dr. Abdul Rivai</p>
-                    <form onsubmit="saveBorUpdate(event)" class="space-y-4 mt-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Kapasitas Tempat Tidur Total</label>
-                            <input type="number" id="input-kapasitas-bed" min="1" max="200" value="${appData.ruangan.kapasitasBed}" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-brand-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Tempat Tidur Terisi Hari Ini</label>
-                            <input type="number" id="input-terisi-bed" min="0" max="200" value="${appData.ruangan.terisiBed}" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-brand-500 outline-none">
-                        </div>
-                        <div class="flex justify-end gap-2 pt-2">
-                            <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
-                            <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Simpan BOR</button>
-                        </div>
-                    </form>
-                </div>
-            `);
-        }
-
-        function saveBorUpdate(e) {
-            e.preventDefault();
-            const kap = parseInt(document.getElementById('input-kapasitas-bed').value, 10);
-            const terisi = parseInt(document.getElementById('input-terisi-bed').value, 10);
-            if (terisi > kap) {
-                showToast('Jumlah bed terisi tidak boleh melebihi kapasitas total!', 'error');
-                return;
-            }
-            appData.ruangan.kapasitasBed = kap;
-            appData.ruangan.terisiBed = terisi;
-            saveData();
-            closeModal();
-            renderCurrentTab();
-            showToast('Data BOR & keterisian bed berhasil diperbarui.');
-        }
-
-        function openQuickSupervisiFor(nurseName) {
-            activeSupervisiSubTab = 'penilaian';
-            switchTab('supervisi');
-            setTimeout(() => {
-                const sel = document.getElementById('sup-perawat');
-                if (sel) sel.value = nurseName;
-            }, 50);
-        }
-
-        // =========================================================================
-        // MODUL 2: JADWAL DINAS & REKAP KEHADIRAN
-        // =========================================================================
-        function renderJadwal() {
-            const year = appData.selectedYear;
-            const month = appData.selectedMonth;
-            const sched = ensureMonthSchedule(year, month);
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const conflicts = detectScheduleConflicts(year, month);
-
-            // Map conflict cells for quick red highlight
-            const conflictCellSet = new Set();
-            conflicts.forEach(c => {
-                conflictCellSet.add(`${c.nurseId}-${c.dayFrom}`);
-                conflictCellSet.add(`${c.nurseId}-${c.dayTo}`);
-            });
-
-            // Daily formation counters
-            const dailyStats = [];
-            for (let d = 1; d <= daysInMonth; d++) {
-                let p = 0, s = 0, m = 0;
-                appData.nurses.forEach(n => {
-                    const code = sched[n.id]?.[d] || 'L';
-                    if (code === 'P') p++;
-                    else if (code === 'S') s++;
-                    else if (code === 'M') m++;
-                });
-                dailyStats.push({ d, p, s, m });
-            }
-
-            return `
-                <!-- Header Kontrol Jadwal -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs space-y-4">
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-extrabold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-calendar-days text-brand-600"></i> Jadwal Dinas & Rekapitulasi Kehadiran Bulanan
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Klik pada sel tanggal untuk mengubah shift. Sistem otomatis mendeteksi bentrok Shift Malam (M) ke Pagi (P).</p>
-                        </div>
-
-                        <div class="flex flex-wrap items-center gap-2">
-                            <!-- Filter Bulan & Tahun -->
-                            <select onchange="changeSchedulePeriod(this.value, ${year})" class="px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-brand-500">
-                                ${MONTH_NAMES.map((mName, idx) => `<option value="${idx}" ${idx === month ? 'selected' : ''}>${mName}</option>`).join('')}
-                            </select>
-                            <select onchange="changeSchedulePeriod(${month}, this.value)" class="px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-brand-500">
-                                <option value="2025" ${year === 2025 ? 'selected' : ''}>2025</option>
-                                <option value="2026" ${year === 2026 ? 'selected' : ''}>2026</option>
-                                <option value="2027" ${year === 2027 ? 'selected' : ''}>2027</option>
-                            </select>
-
-                            <!-- Generate Pola Otomatis -->
-                            <button onclick="openAutoPatternModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Pola Otomatis
-                            </button>
-
-                            <!-- Tambah Perawat -->
-                            <button onclick="openAddNurseModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-user-plus"></i> + Perawat
-                            </button>
-
-                            <!-- Ekspor CSV & Cetak -->
-                            <button onclick="exportJadwalCSV()" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-file-csv"></i> Ekspor CSV
-                            </button>
-                            <button onclick="selectedReportType='jadwal'; openDirectReport()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-print"></i> Cetak
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Legenda Shift -->
-                    <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100 text-[11px]">
-                        <span class="font-bold text-slate-500 mr-1">Legenda Shift:</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">P = Pagi (07.00-14.00 • 7j)</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold border border-amber-200">S = Sore (14.00-21.00 • 7j)</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">M = Malam (21.00-07.00 • 10j)</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-bold border border-slate-200">L = Libur / OFF</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 font-bold border border-rose-200">C = Cuti</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-700 font-bold border border-purple-200">Skt = Sakit</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-sky-100 text-sky-700 font-bold border border-sky-200">I = Izin</span>
-                    </div>
-
-                    <!-- Alert Deteksi Otomatis Kesalahan Jadwal (Malam ke Pagi) -->
-                    ${conflicts.length > 0 ? `
-                    <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-300 flex items-start gap-3">
-                        <i class="fa-solid fa-circle-exclamation text-rose-600 text-base mt-0.5"></i>
-                        <div class="text-xs text-rose-800">
-                            <p class="font-extrabold">Peringatan Kesalahan Jadwal Terdeteksi (${conflicts.length} Bentrok Shift Malam ke Pagi)!</p>
-                            <p class="mt-0.5">Perawat berikut dijadwalkan dinas <strong>Malam (M)</strong> langsung berlanjut <strong>Pagi (P)</strong> keesokan harinya (berisiko kelelahan klinis): 
-                            ${conflicts.map(c => `<span class="underline font-bold">${c.nurseName}</span> (Tgl ${c.dayFrom}→${c.dayTo})`).join(', ')}.</p>
-                        </div>
-                    </div>
-                    ` : `
-                    <div class="p-2.5 px-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center gap-2 text-xs text-emerald-800 font-semibold">
-                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                        <span>Validasi Jadwal Aman: Tidak ditemukan pelanggaran rotasi Shift Malam (M) langsung ke Shift Pagi (P).</span>
-                    </div>
-                    `}
-                </div>
-
-                <!-- Tabel Matriks Jadwal Bulanan -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-brand-950 text-white">
-                                    <th class="sticky left-0 z-10 bg-brand-950 py-3 px-3 text-left font-extrabold min-w-[200px] border-r border-white/10">Nama Perawat & Jabatan</th>
-                                    ${Array.from({ length: daysInMonth }, (_, i) => {
-                                        const d = i + 1;
-                                        const dateObj = new Date(year, month, d);
-                                        const dayName = DAY_NAMES[dateObj.getDay()];
-                                        const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
-                                        const isToday = (year === 2026 && month === 10 && d === TODAY_DAY);
-                                        return `
-                                        <th class="py-2 px-1 text-center min-w-[34px] border-r border-white/10 ${isToday ? 'bg-brand-600' : isWeekend ? 'bg-brand-900' : ''}">
-                                            <div class="text-[9px] font-medium ${isWeekend ? 'text-amber-300' : 'text-slate-300'}">${dayName}</div>
-                                            <div class="font-extrabold text-xs">${d}</div>
-                                        </th>
-                                        `;
-                                    }).join('')}
-                                    <th class="py-2 px-2 text-center bg-emerald-900 font-bold min-w-[32px]" title="Total Pagi">P</th>
-                                    <th class="py-2 px-2 text-center bg-amber-900 font-bold min-w-[32px]" title="Total Sore">S</th>
-                                    <th class="py-2 px-2 text-center bg-indigo-900 font-bold min-w-[32px]" title="Total Malam">M</th>
-                                    <th class="py-2 px-2 text-center bg-slate-800 font-bold min-w-[32px]" title="Total Libur/Cuti">L</th>
-                                    <th class="py-2 px-3 text-center bg-brand-900 font-extrabold min-w-[64px]" title="Total Jam Kerja">Jam</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200">
-                                ${appData.nurses.map(nurse => {
-                                    const nSched = sched[nurse.id] || {};
-                                    let totP = 0, totS = 0, totM = 0, totL = 0, totHours = 0;
-
-                                    const cellsHtml = Array.from({ length: daysInMonth }, (_, i) => {
-                                        const d = i + 1;
-                                        const code = nSched[d] || 'L';
-                                        const sc = SHIFT_CONFIG[code] || SHIFT_CONFIG['L'];
-                                        if (code === 'P') totP++;
-                                        else if (code === 'S') totS++;
-                                        else if (code === 'M') totM++;
-                                        else totL++;
-                                        totHours += sc.hours;
-
-                                        const isConflict = conflictCellSet.has(`${nurse.id}-${d}`);
-                                        const conflictClass = isConflict ? 'ring-2 ring-rose-600 bg-rose-200 text-rose-950 animate-pulse' : `${sc.bg} ${sc.text}`;
-
-                                        return `
-                                        <td class="p-1 text-center border-r border-slate-100">
-                                            <button onclick="cycleCellShift('${nurse.id}', ${d})" title="${nurse.nama} • Tgl ${d}: ${sc.label} (Klik untuk ganti)" class="shift-cell w-7 h-7 rounded-lg font-extrabold text-[11px] flex items-center justify-center mx-auto ${conflictClass}">
-                                                ${code}
-                                            </button>
-                                        </td>
-                                        `;
-                                    }).join('');
-
-                                    return `
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="sticky left-0 z-10 bg-white py-2.5 px-3 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800 truncate max-w-[190px]">${nurse.nama}</div>
-                                            <div class="text-[10px] text-slate-500">${nurse.jabatan} • <span class="font-bold text-brand-700">${nurse.pk}</span></div>
-                                        </td>
-                                        ${cellsHtml}
-                                        <td class="py-2 px-1.5 text-center font-bold bg-emerald-50/60 text-emerald-800">${totP}</td>
-                                        <td class="py-2 px-1.5 text-center font-bold bg-amber-50/60 text-amber-800">${totS}</td>
-                                        <td class="py-2 px-1.5 text-center font-bold bg-indigo-50/60 text-indigo-800">${totM}</td>
-                                        <td class="py-2 px-1.5 text-center font-bold bg-slate-50 text-slate-600">${totL}</td>
-                                        <td class="py-2 px-2 text-center font-extrabold bg-brand-50/70 text-brand-900">${totHours}j</td>
-                                    </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                            <!-- Rekap Formasi Jaga Harian P / S / M di Bagian Bawah -->
-                            <tfoot>
-                                <tr class="bg-rose-50/80 border-t-2 border-slate-300 font-bold text-[10px]">
-                                    <td class="sticky left-0 z-10 bg-rose-50 py-2.5 px-3 text-rose-900 font-extrabold border-r border-slate-200">
-                                        Formasi Siaga Harian (P / S / M)
-                                    </td>
-                                    ${dailyStats.map(st => `
-                                        <td class="py-2 px-0.5 text-center border-r border-rose-100 text-rose-900 leading-tight">
-                                            <div>${st.p}/${st.s}/${st.m}</div>
-                                        </td>
-                                    `).join('')}
-                                    <td colspan="5" class="py-2 px-2 text-center text-slate-500 bg-slate-100">Rekap Bulanan</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-
-        function changeSchedulePeriod(month, year) {
-            appData.selectedMonth = parseInt(month, 10);
-            appData.selectedYear = parseInt(year, 10);
-            ensureMonthSchedule(appData.selectedYear, appData.selectedMonth);
-            saveData();
-            renderCurrentTab();
-        }
-
-        function cycleCellShift(nurseId, day) {
-            const sched = ensureMonthSchedule();
-            const cur = sched[nurseId][day] || 'L';
-            const next = SHIFT_ORDER[(SHIFT_ORDER.indexOf(cur) + 1) % SHIFT_ORDER.length];
-            sched[nurseId][day] = next;
-            saveData();
-            renderCurrentTab();
-        }
-
-        function openAutoPatternModal() {
-            openModal(`
-                <div class="p-6">
-                    <h3 class="text-lg font-extrabold text-slate-800">Generate Pola Jadwal Dinas Otomatis</h3>
-                    <p class="text-xs text-slate-500 mt-1">Pilih pola rotasi dinas untuk bulan <strong>${MONTH_NAMES[appData.selectedMonth]} ${appData.selectedYear}</strong>.</p>
-                    <div class="space-y-3 mt-4">
-                        <button onclick="applyAutoPattern('psml')" class="w-full p-4 rounded-xl border border-slate-200 hover:border-brand-500 hover:bg-brand-50/50 text-left transition">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-extrabold text-slate-800">Pola Rotasi Standar (P - P - S - S - M - L - L)</span>
-                                <span class="px-2 py-0.5 rounded bg-brand-100 text-brand-800 text-[10px] font-bold">Direkomendasikan</span>
-                            </div>
-                            <p class="text-xs text-slate-500 mt-1">Menjamin jeda libur 2 hari setelah dinas malam (M) sehingga bebas bentrok Malam-ke-Pagi.</p>
-                        </button>
-                        <button onclick="applyAutoPattern('lss')" class="w-full p-4 rounded-xl border border-slate-200 hover:border-brand-500 hover:bg-brand-50/50 text-left transition">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-extrabold text-slate-800">Pola Rotasi Cepat (P - S - M - L - L - P - S)</span>
-                                <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-bold">Alternatif</span>
-                            </div>
-                            <p class="text-xs text-slate-500 mt-1">Rotasi bergilir dengan pemerataan beban jaga sore dan malam untuk seluruh perawat pelaksana.</p>
-                        </button>
-                    </div>
-                    <div class="flex justify-end mt-5">
-                        <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
-                    </div>
-                </div>
-            `);
-        }
-
-        function applyAutoPattern(type) {
-            const year = appData.selectedYear;
-            const month = appData.selectedMonth;
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const sched = {};
-            const basePat = type === 'psml' ? ['P', 'P', 'S', 'S', 'M', 'L', 'L'] : ['P', 'S', 'M', 'L', 'L', 'P', 'S'];
-
-            appData.nurses.forEach((nurse, idx) => {
-                sched[nurse.id] = {};
-                if (nurse.jabatan.includes('Kepala Ruangan')) {
-                    for (let d = 1; d <= daysInMonth; d++) {
-                        const dayOfWeek = new Date(year, month, d).getDay();
-                        sched[nurse.id][d] = (dayOfWeek === 0 || dayOfWeek === 6) ? 'L' : 'P';
-                    }
-                } else {
-                    const offset = idx * 2;
-                    for (let d = 1; d <= daysInMonth; d++) {
-                        sched[nurse.id][d] = basePat[(d - 1 + offset) % basePat.length];
-                    }
-                }
-            });
-
-            appData.schedules[getMonthKey(year, month)] = sched;
-            saveData();
-            closeModal();
-            renderCurrentTab();
-            showToast(`Pola jadwal otomatis berhasil diterapkan untuk ${MONTH_NAMES[month]} ${year}.`);
-        }
-
-        function openAddNurseModal() {
-            openModal(`
-                <div class="p-6">
-                    <h3 class="text-lg font-extrabold text-slate-800">Tambah Tenaga Perawat Baru</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Data otomatis tersinkron ke Jadwal Dinas & Master SDM Ruang Dahlia.</p>
-                    <form onsubmit="saveNewNurse(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                        <div class="sm:col-span-2">
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
-                            <input type="text" id="new-nurse-nama" placeholder="Contoh: Ns. Rahmat Hidayat, S.Kep" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none focus:ring-2 focus:ring-brand-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">NIP / NRP</label>
-                            <input type="text" id="new-nurse-nip" placeholder="19980101 202401 1 001" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none focus:ring-2 focus:ring-brand-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Pendidikan Terakhir</label>
-                            <select id="new-nurse-pend" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
-                                <option>S1 Keperawatan + Ners</option>
-                                <option>D3 Keperawatan</option>
-                                <option>S2 Keperawatan</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Jenjang Klinis (PK)</label>
-                            <select id="new-nurse-pk" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
-                                <option>PK I</option>
-                                <option>PK II</option>
-                                <option>PK III</option>
-                                <option>PK IV</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Jabatan di Ruangan</label>
-                            <select id="new-nurse-jab" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
-                                <option>Perawat Pelaksana</option>
-                                <option>Ketua Tim (Katim)</option>
-                                <option>Clinical Instructor (CI)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor STR</label>
-                            <input type="text" id="new-nurse-str" placeholder="STR-6403-2029-XXXX" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Masa Berlaku STR</label>
-                            <input type="date" id="new-nurse-exp" value="2029-12-31" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
-                        </div>
-                        <div class="sm:col-span-2 flex justify-end gap-2 pt-2">
-                            <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
-                            <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Simpan Perawat</button>
-                        </div>
-                    </form>
-                </div>
-            `);
-        }
-
-        function saveNewNurse(e) {
-            e.preventDefault();
-            const newId = 'n' + Date.now();
-            const nurse = {
-                id: newId,
-                nama: document.getElementById('new-nurse-nama').value.trim(),
-                nip: document.getElementById('new-nurse-nip').value.trim(),
-                pendidikan: document.getElementById('new-nurse-pend').value,
-                pk: document.getElementById('new-nurse-pk').value,
-                jabatan: document.getElementById('new-nurse-jab').value,
-                strNo: document.getElementById('new-nurse-str').value.trim(),
-                strExp: document.getElementById('new-nurse-exp').value,
-                status: 'Aktif'
-            };
-            appData.nurses.push(nurse);
-            const sched = ensureMonthSchedule();
-            const daysInMonth = new Date(appData.selectedYear, appData.selectedMonth + 1, 0).getDate();
-            sched[newId] = {};
-            const pat = ['P', 'P', 'S', 'S', 'M', 'L', 'L'];
-            for (let d = 1; d <= daysInMonth; d++) {
-                sched[newId][d] = pat[(d - 1) % pat.length];
-            }
-            saveData();
-            closeModal();
-            renderCurrentTab();
-            showToast(`${nurse.nama} berhasil ditambahkan ke Ruang Dahlia.`);
-        }
-
-        function exportJadwalCSV() {
-            const year = appData.selectedYear;
-            const month = appData.selectedMonth;
-            const sched = ensureMonthSchedule(year, month);
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            let headers = ['No', 'Nama Perawat', 'Jabatan', 'PK'];
-            for (let d = 1; d <= daysInMonth; d++) headers.push(`Tgl ${d}`);
-            headers.push('Pagi', 'Sore', 'Malam', 'Libur', 'Total Jam');
-
-            const rows = [headers.join(',')];
-            appData.nurses.forEach((n, idx) => {
-                let p = 0, s = 0, m = 0, l = 0, jam = 0;
-                const row = [idx + 1, `"${n.nama}"`, `"${n.jabatan}"`, n.pk];
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const code = sched[n.id]?.[d] || 'L';
-                    row.push(code);
-                    if (code === 'P') p++;
-                    else if (code === 'S') s++;
-                    else if (code === 'M') m++;
-                    else l++;
-                    jam += (SHIFT_CONFIG[code]?.hours || 0);
-                }
-                row.push(p, s, m, l, jam);
-                rows.push(row.join(','));
-            });
-
-            downloadCSV(rows.join('\n'), `Jadwal_Dinas_Ruang_Dahlia_${MONTH_NAMES[month]}_${year}.csv`);
-        }
-
-        // =========================================================================
-        // MODUL 3: KALKULATOR BEBAN KERJA KEPERAWATAN (DOUGLAS, DEPKES, GILLIES, FTE)
-        // =========================================================================
-        let workloadFormState = {
-            tanggal: TODAY_STR,
-            minimal: 6,
-            partial: 12,
-            totalCare: 6,
-            tersedia: 9,
-            catatan: 'Pengaturan jadwal dinas shift pagi diperkuat Katim untuk antisipasi pasien total care.'
-        };
-
-        function calculateWorkload(method, minC, parC, totC, available) {
-            const totalPasien = minC + parC + totC;
-            let pagi = 0, sore = 0, malam = 0, totalKebutuhan = 0, lossDay = 0, nonNursing = 0, rumusDesc = '';
-
-            if (method === 'Douglas') {
-                // Standar Koefisien Douglas:
-                // Minimal: P=0.17, S=0.14, M=0.07
-                // Partial: P=0.27, S=0.15, M=0.10
-                // Total:   P=0.36, S=0.30, M=0.20
-                pagi = (minC * 0.17) + (parC * 0.27) + (totC * 0.36);
-                sore = (minC * 0.14) + (parC * 0.15) + (totC * 0.30);
-                malam = (minC * 0.07) + (parC * 0.10) + (totC * 0.20);
-                const subtotal = pagi + sore + malam;
-                lossDay = subtotal * 0.25; // Faktor libur/cuti (~25%)
-                nonNursing = (subtotal + lossDay) * 0.25; // Tugas non-keperawatan 25%
-                totalKebutuhan = subtotal + lossDay + nonNursing;
-                rumusDesc = 'Koefisien Douglas per kategori pasien × 3 shift + Faktor Libur (25%) & Non-Nursing (25%)';
-            } else if (method === 'Depkes') {
-                // Standar Depkes RI (2005):
-                // Minimal = 2 jam/hari, Partial = 3.08 jam/hari, Total = 4.15 jam/hari; Jam efektif perawat = 7 jam/hari
-                const totalJamPerawatan = (minC * 2.0) + (parC * 3.08) + (totC * 4.15);
-                const tenagaPokok = totalJamPerawatan / 7;
-                // Loss day = (78 hari libur+cuti / 287 hari kerja efektif) * tenagaPokok
-                lossDay = (78 / 287) * tenagaPokok;
-                nonNursing = (tenagaPokok + lossDay) * 0.25;
-                totalKebutuhan = tenagaPokok + lossDay + nonNursing;
-                pagi = totalKebutuhan * 0.45;
-                sore = totalKebutuhan * 0.35;
-                malam = totalKebutuhan * 0.20;
-                rumusDesc = 'Depkes RI: (Total Jam Perawatan ÷ 7 Jam Efektif) + Loss Day (78/287) + Non-Nursing (25%)';
-            } else if (method === 'Gillies') {
-                // Rumus Gillies (1994):
-                // Jam perawatan: Minimal=2j, Partial=3j, Total=6j
-                // Kebutuhan = (A x B x 365) / ((365 - C) x Jam Kerja/hari) -> C=76 hari libur, Jam=7
-                const avgJamPerPasien = totalPasien > 0 ? ((minC * 2) + (parC * 3) + (totC * 6)) / totalPasien : 0;
-                totalKebutuhan = (avgJamPerPasien * totalPasien * 365) / ((365 - 76) * 7);
-                lossDay = totalKebutuhan * 0.21;
-                nonNursing = totalKebutuhan * 0.20;
-                pagi = totalKebutuhan * 0.47;
-                sore = totalKebutuhan * 0.36;
-                malam = totalKebutuhan * 0.17;
-                rumusDesc = 'Gillies: (Jam Perawatan Rata-rata × Sensus × 365) ÷ ((365 - 76 Hari Libur) × 7 Jam)';
-            } else {
-                // Metode FTE (Full Time Equivalent):
-                // Minimal=1.5j, Partial=3.5j, Total=5.5j; 1 FTE = 40 jam/minggu (5.71 jam/hari kalender)
-                const totalJamHarian = (minC * 1.5) + (parC * 3.5) + (totC * 5.5);
-                const baseFTE = (totalJamHarian * 7) / 40;
-                lossDay = baseFTE * 0.18;
-                nonNursing = baseFTE * 0.15;
-                totalKebutuhan = baseFTE + lossDay + nonNursing;
-                pagi = totalKebutuhan * 0.45;
-                sore = totalKebutuhan * 0.35;
-                malam = totalKebutuhan * 0.20;
-                rumusDesc = 'FTE: (Total Jam Asuhan Mingguan ÷ 40 Jam Kerja Standar/Minggu) + Cadangan Cuti & Administrasi';
-            }
-
-            const gap = available - totalKebutuhan;
-            return {
-                totalPasien,
-                totalKebutuhan: Number(totalKebutuhan.toFixed(1)),
-                pagiExact: Number(pagi.toFixed(2)),
-                soreExact: Number(sore.toFixed(2)),
-                malamExact: Number(malam.toFixed(2)),
-                pagiRound: Math.ceil(pagi),
-                soreRound: Math.ceil(sore),
-                malamRound: Math.ceil(malam),
-                lossDay: Number(lossDay.toFixed(2)),
-                nonNursing: Number(nonNursing.toFixed(2)),
-                gap: Number(gap.toFixed(1)),
-                rumusDesc
-            };
-        }
-
-        function renderBebanKerja() {
-            const calc = calculateWorkload(
-                activeWorkloadMethod,
-                workloadFormState.minimal,
-                workloadFormState.partial,
-                workloadFormState.totalCare,
-                workloadFormState.tersedia
-            );
-            const isDeficit = calc.gap < 0;
-
-            return `
-                <!-- Header Kalkulator & Pilihan 4 Metode -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-base sm:text-lg font-extrabold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-calculator text-brand-600"></i> Kalkulator Kebutuhan Tenaga & Beban Kerja Keperawatan
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Hitung estimasi kebutuhan perawat Ruang Dahlia berdasarkan tingkat ketergantungan pasien.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1.5 rounded-xl">
-                        ${['Douglas', 'Depkes', 'Gillies', 'FTE'].map(m => `
-                            <button onclick="setWorkloadMethod('${m}')" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition ${activeWorkloadMethod === m ? 'bg-brand-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}">
-                                ${m}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- Grid Form Input (Kiri) + Hasil Real-Time & Riwayat (Kanan) -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- Input Data Sensus Pasien -->
-                    <div class="lg:col-span-5 bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs space-y-4">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                            <h4 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-bed text-brand-600"></i> Input Data Sensus Pasien
-                            </h4>
-                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-brand-50 text-brand-700">Metode ${activeWorkloadMethod}</span>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Evaluasi</label>
-                            <input type="date" id="wk-tanggal" value="${workloadFormState.tanggal}" onchange="updateWorkloadInput('tanggal', this.value)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none focus:ring-2 focus:ring-brand-500">
-                        </div>
-
-                        <!-- 1. Minimal Care -->
-                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                            <div class="flex items-center justify-between gap-3">
-                                <label class="text-xs font-extrabold text-slate-800">1. Minimal Care (Mandiri)</label>
-                                <input type="number" min="0" max="50" value="${workloadFormState.minimal}" oninput="updateWorkloadInput('minimal', this.value)" class="w-20 px-2.5 py-1.5 rounded-lg border border-slate-300 text-center text-sm font-extrabold text-brand-700 bg-white outline-none focus:ring-2 focus:ring-brand-500">
-                            </div>
-                            <p class="text-[11px] text-slate-500 mt-1">Pasien makan/minum sendiri, ambulasi mandiri, tanda vital stabil (1–2 jam asuhan/hari).</p>
-                        </div>
-
-                        <!-- 2. Partial Care -->
-                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                            <div class="flex items-center justify-between gap-3">
-                                <label class="text-xs font-extrabold text-slate-800">2. Partial Care (Sebagian)</label>
-                                <input type="number" min="0" max="50" value="${workloadFormState.partial}" oninput="updateWorkloadInput('partial', this.value)" class="w-20 px-2.5 py-1.5 rounded-lg border border-slate-300 text-center text-sm font-extrabold text-amber-600 bg-white outline-none focus:ring-2 focus:ring-brand-500">
-                            </div>
-                            <p class="text-[11px] text-slate-500 mt-1">Bantuan parsial personal hygiene, infus terpasang, observasi TTV berkala (3–4 jam asuhan/hari).</p>
-                        </div>
-
-                        <!-- 3. Total Care -->
-                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                            <div class="flex items-center justify-between gap-3">
-                                <label class="text-xs font-extrabold text-slate-800">3. Total Care (Ketergantungan Total)</label>
-                                <input type="number" min="0" max="50" value="${workloadFormState.totalCare}" oninput="updateWorkloadInput('totalCare', this.value)" class="w-20 px-2.5 py-1.5 rounded-lg border border-slate-300 text-center text-sm font-extrabold text-rose-600 bg-white outline-none focus:ring-2 focus:ring-brand-500">
-                            </div>
-                            <p class="text-[11px] text-slate-500 mt-1">Tirah baring, NGT/kateter, luka luas, kesadaran menurun, tidak mampu mandiri (5–6 jam asuhan/hari).</p>
-                        </div>
-
-                        <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-brand-50 border border-brand-200 text-xs font-extrabold text-brand-900">
-                            <span>Total Pasien Dirawat</span>
-                            <span class="text-sm">${calc.totalPasien} Pasien</span>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Tenaga Perawat Tersedia / Dinas Saat Ini (Orang)</label>
-                            <input type="number" min="1" max="50" value="${workloadFormState.tersedia}" oninput="updateWorkloadInput('tersedia', this.value)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-extrabold text-slate-800 outline-none focus:ring-2 focus:ring-brand-500">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Catatan / Analisis Kepala Ruangan</label>
-                            <textarea rows="2" oninput="updateWorkloadInput('catatan', this.value)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs text-slate-700 outline-none focus:ring-2 focus:ring-brand-500">${workloadFormState.catatan}</textarea>
-                        </div>
-
-                        <button onclick="saveWorkloadEvaluation()" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-sm transition">
-                            <i class="fa-solid fa-floppy-disk"></i> Simpan Evaluasi Beban Kerja
-                        </button>
-                    </div>
-
-                    <!-- Hasil Real-Time & Riwayat Evaluasi -->
-                    <div class="lg:col-span-7 space-y-6">
-                        <!-- Dark Emerald Result Card -->
-                        <div class="bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl border border-brand-800/50">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <span class="text-[11px] font-bold uppercase tracking-wider text-brand-400">Hasil Perhitungan Standar ${activeWorkloadMethod}</span>
-                                    <div class="flex items-baseline gap-2 mt-1">
-                                        <span class="text-3xl sm:text-4xl font-extrabold text-white">Kebutuhan: ${calc.totalKebutuhan} Perawat</span>
-                                        <span class="text-sm text-slate-400">/ 24 Jam</span>
-                                    </div>
-                                    <p class="text-[11px] text-slate-400 mt-1">${calc.rumusDesc}</p>
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <span class="text-[11px] text-slate-400 block">Tersedia Saat Ini</span>
-                                    <span class="text-lg font-extrabold text-brand-400">${workloadFormState.tersedia} Orang</span>
-                                </div>
-                            </div>
-
-                            <!-- Status Kekurangan / Cukup / Lebih -->
-                            <div class="mt-4 p-3.5 rounded-xl ${isDeficit ? 'bg-rose-500/15 border border-rose-500/40' : 'bg-emerald-500/15 border border-emerald-500/40'} flex items-center justify-between gap-3">
-                                <div class="flex items-center gap-2.5">
-                                    <i class="fa-solid ${isDeficit ? 'fa-circle-exclamation text-rose-400' : 'fa-circle-check text-emerald-400'} text-lg"></i>
-                                    <div>
-                                        <p class="text-xs font-extrabold ${isDeficit ? 'text-rose-200' : 'text-emerald-200'}">
-                                            ${isDeficit ? `Kekurangan Tenaga (${Math.abs(calc.gap)} Orang)` : `Tenaga Mencukupi / Optimal (+${calc.gap} Orang)`}
-                                        </p>
-                                        <p class="text-[11px] text-slate-300 mt-0.5">
-                                            ${isDeficit ? 'Beban kerja tinggi: prioritaskan asuhan total care & optimalkan bantuan Katim.' : 'Formasi perawat memadai untuk memenuhi standar jam asuhan pasien.'}
-                                        </p>
-                                    </div>
-                                </div>
-                                <span class="px-3 py-1 rounded-lg text-xs font-extrabold shrink-0 ${isDeficit ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}">
-                                    ${calc.gap > 0 ? '+' : ''}${calc.gap} Staf
-                                </span>
-                            </div>
-
-                            <!-- Rincian Per Shift -->
-                            <div class="grid grid-cols-3 gap-3 mt-5">
-                                <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 text-center">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-brand-400">Shift Pagi</span>
-                                    <div class="mt-1 flex items-baseline justify-center gap-1">
-                                        <span class="text-2xl font-extrabold text-white">${calc.pagiRound}</span>
-                                        <span class="text-xs text-slate-400">(${calc.pagiExact})</span>
-                                    </div>
-                                    <span class="text-[11px] text-slate-400">Perawat Siaga</span>
-                                </div>
-                                <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 text-center">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Shift Sore</span>
-                                    <div class="mt-1 flex items-baseline justify-center gap-1">
-                                        <span class="text-2xl font-extrabold text-white">${calc.soreRound}</span>
-                                        <span class="text-xs text-slate-400">(${calc.soreExact})</span>
-                                    </div>
-                                    <span class="text-[11px] text-slate-400">Perawat Siaga</span>
-                                </div>
-                                <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 text-center">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Shift Malam</span>
-                                    <div class="mt-1 flex items-baseline justify-center gap-1">
-                                        <span class="text-2xl font-extrabold text-white">${calc.malamRound}</span>
-                                        <span class="text-xs text-slate-400">(${calc.malamExact})</span>
-                                    </div>
-                                    <span class="text-[11px] text-slate-400">Perawat Siaga</span>
-                                </div>
-                            </div>
-
-                            <!-- Faktor Koreksi -->
-                            <div class="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300">
-                                <span>Faktor Libur & Cuti (Loss Day): <strong class="text-white">+${calc.lossDay}</strong></span>
-                                <span>Non-Nursing & Administrasi: <strong class="text-white">+${calc.nonNursing}</strong></span>
-                            </div>
-                        </div>
-
-                        <!-- Riwayat Evaluasi Beban Kerja Ruangan -->
-                        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-                            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                                <h4 class="text-sm font-extrabold text-slate-800">Riwayat Evaluasi Beban Kerja Ruang Dahlia</h4>
-                                <span class="text-xs font-bold text-slate-400">${appData.workloadHistory.length} Catatan</span>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse text-xs">
-                                    <thead>
-                                        <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-500 uppercase">
-                                            <th class="py-2.5 px-4">Tanggal</th>
-                                            <th class="py-2.5 px-3">Metode</th>
-                                            <th class="py-2.5 px-3 text-center">Pasien</th>
-                                            <th class="py-2.5 px-3 text-center">Kebutuhan</th>
-                                            <th class="py-2.5 px-3 text-center">Riil</th>
-                                            <th class="py-2.5 px-3 text-center">Gap</th>
-                                            <th class="py-2.5 px-4 text-right">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100">
-                                        ${appData.workloadHistory.map(item => `
-                                            <tr class="hover:bg-slate-50">
-                                                <td class="py-3 px-4 font-bold text-slate-800">${item.tanggal}</td>
-                                                <td class="py-3 px-3 font-semibold text-brand-700">${item.metode}</td>
-                                                <td class="py-3 px-3 text-center font-bold">${item.totalPasien}</td>
-                                                <td class="py-3 px-3 text-center font-extrabold text-slate-800">${item.kebutuhan}</td>
-                                                <td class="py-3 px-3 text-center font-semibold">${item.riil}</td>
-                                                <td class="py-3 px-3 text-center">
-                                                    <span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold ${item.gap < 0 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">
-                                                        ${item.gap > 0 ? '+' : ''}${item.gap}
-                                                    </span>
-                                                </td>
-                                                <td class="py-3 px-4 text-right">
-                                                    <button onclick="deleteWorkloadHistory('${item.id}')" class="text-slate-400 hover:text-rose-600 p-1 transition" title="Hapus Riwayat">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function setWorkloadMethod(method) {
-            activeWorkloadMethod = method;
-            renderCurrentTab();
-        }
-
-        function updateWorkloadInput(field, val) {
-            if (field === 'tanggal' || field === 'catatan') {
-                workloadFormState[field] = val;
-            } else {
-                workloadFormState[field] = Math.max(0, parseInt(val, 10) || 0);
-            }
-            if (field !== 'catatan') {
-                renderCurrentTab();
-            }
-        }
-
-        function saveWorkloadEvaluation() {
-            const calc = calculateWorkload(
-                activeWorkloadMethod,
-                workloadFormState.minimal,
-                workloadFormState.partial,
-                workloadFormState.totalCare,
-                workloadFormState.tersedia
-            );
-            appData.workloadHistory.unshift({
-                id: 'w' + Date.now(),
-                tanggal: workloadFormState.tanggal,
-                metode: activeWorkloadMethod,
-                minimal: workloadFormState.minimal,
-                partial: workloadFormState.partial,
-                totalCare: workloadFormState.totalCare,
-                totalPasien: calc.totalPasien,
-                kebutuhan: calc.totalKebutuhan,
-                riil: workloadFormState.tersedia,
-                gap: calc.gap,
-                pagi: calc.pagiRound,
-                sore: calc.soreRound,
-                malam: calc.malamRound,
-                catatan: workloadFormState.catatan
-            });
-            saveData();
-            renderCurrentTab();
-            showToast(`Evaluasi beban kerja (${activeWorkloadMethod}) berhasil disimpan.`);
-        }
-
-        function deleteWorkloadHistory(id) {
-            appData.workloadHistory = appData.workloadHistory.filter(w => w.id !== id);
-            saveData();
-            renderCurrentTab();
-            showToast('Riwayat evaluasi beban kerja dihapus.', 'warning');
-        }
-
-        // =========================================================================
-        // MODUL 4: SUPERVISI KEPERAWATAN (JADWAL, PENILAIAN, SKOR, TEMUAN & RTL)
-        // =========================================================================
-        const SUPERVISI_CHECKLIST_ITEMS = [
-            'Melakukan kebersihan tangan (5 Momen Hand Hygiene) sebelum & sesudah tindakan',
-            'Verifikasi identitas pasien menggunakan minimal 2 parameter (Nama & Tanggal Lahir)',
-            'Pelaksanaan prosedur tindakan klinis sesuai SOP Ruang Dahlia & prinsip aseptik',
-            'Kelengkapan pendokumentasian asuhan keperawatan (SOAP / CPPT) secara akurat',
-            'Komunikasi terapeutik & edukasi keselamatan kepada pasien dan keluarga'
-        ];
-
-        let supervisiChecklistScores = [5, 4, 4, 4, 5];
-
-        function renderSupervisi() {
-            const totalNilai = supervisiChecklistScores.reduce((a, b) => a + b, 0);
-            const skorOtomatis = Math.round((totalNilai / (SUPERVISI_CHECKLIST_ITEMS.length * 5)) * 100);
-
-            return `
-                <!-- Header & Sub-Tab Alur Supervisi (5 Pilar Sesuai Gambar) -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs space-y-4">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-extrabold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-clipboard-check text-brand-600"></i> Supervisi Klinis Keperawatan
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Alur terpadu: Jadwal → Form Penilaian → Skor Otomatis → Temuan & Rekomendasi → Tindak Lanjut.</p>
-                        </div>
-                    </div>
-
-                    <!-- 5 Pillar Sub-Tabs -->
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2">
-                        ${[
-                            { id: 'jadwal', icon: 'fa-calendar-check', label: '1. Jadwal Supervisi' },
-                            { id: 'penilaian', icon: 'fa-pen-to-square', label: '2. Form Penilaian' },
-                            { id: 'skor', icon: 'fa-chart-column', label: '3. Rekap & Skor' },
-                            { id: 'temuan', icon: 'fa-lightbulb', label: '4. Temuan & Rekom.' },
-                            { id: 'tindaklanjut', icon: 'fa-arrows-rotate', label: '5. Tindak Lanjut' }
-                        ].map(st => `
-                            <button onclick="activeSupervisiSubTab='${st.id}'; renderCurrentTab()" class="p-3 rounded-xl border text-left transition flex flex-col gap-1.5 ${activeSupervisiSubTab === st.id ? 'bg-brand-900 text-white border-brand-800 shadow-sm' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'}">
-                                <i class="fa-solid ${st.icon} ${activeSupervisiSubTab === st.id ? 'text-brand-400' : 'text-brand-600'} text-base"></i>
-                                <span class="text-xs font-extrabold">${st.label}</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-
-                ${activeSupervisiSubTab === 'penilaian' ? `
-                <!-- Form Input Supervisi Baru -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
-                    <form onsubmit="submitSupervisiForm(event)" class="space-y-5">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                            <div>
-                                <h4 class="text-base font-extrabold text-slate-800">Formulir Penilaian Supervisi Klinis Baru</h4>
-                                <p class="text-xs text-slate-500">Isi checklist penilaian skala 1–5 untuk menghitung skor kepatuhan secara otomatis.</p>
-                            </div>
-                            <div class="px-4 py-2 rounded-xl bg-brand-50 border border-brand-200 flex items-center gap-3">
-                                <span class="text-xs font-bold text-brand-800">Skor Otomatis:</span>
-                                <span id="sup-live-score" class="text-xl font-extrabold text-brand-700">${skorOtomatis}%</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Perawat yang Disupervisi</label>
-                                <select id="sup-perawat" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:ring-2 focus:ring-brand-500">
-                                    ${appData.nurses.filter(n => n.jabatan !== 'Kepala Ruangan').map(n => `<option value="${n.nama}">${n.nama} (${n.pk})</option>`).join('')}
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Topik / Tindakan Supervisi</label>
-                                <input type="text" id="sup-topik" value="Pemberian Obat Prinsip 7 Benar & Double Check" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold outline-none focus:ring-2 focus:ring-brand-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Pelaksanaan</label>
-                                <input type="date" id="sup-tanggal" value="${TODAY_STR}" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold outline-none focus:ring-2 focus:ring-brand-500">
-                            </div>
-                        </div>
-
-                        <!-- Checklist Penilaian 1-5 -->
-                        <div class="space-y-2.5">
-                            <div class="flex items-center justify-between text-xs font-extrabold text-slate-600 px-1">
-                                <span>Indikator Penilaian Klinis & Dokumentasi</span>
-                                <span>Skala Nilai (1 = Kurang, 5 = Sangat Baik)</span>
-                            </div>
-                            ${SUPERVISI_CHECKLIST_ITEMS.map((item, idx) => `
-                                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                    <span class="text-xs font-semibold text-slate-800">${idx + 1}. ${item}</span>
-                                    <div class="flex items-center gap-1.5 shrink-0">
-                                        ${[1, 2, 3, 4, 5].map(val => `
-                                            <button type="button" onclick="setSupervisiScore(${idx}, ${val})" class="w-8 h-8 rounded-lg font-extrabold text-xs transition ${supervisiChecklistScores[idx] === val ? 'bg-brand-600 text-white shadow-xs' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-100'}">
-                                                ${val}
-                                            </button>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <!-- Temuan & Rekomendasi -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Temuan Supervisi</label>
-                                <textarea id="sup-temuan" rows="2" placeholder="Tuliskan temuan lapangan selama supervisi..." required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Rekomendasi Kepala Ruangan</label>
-                                <textarea id="sup-rekomendasi" rows="2" placeholder="Tuliskan arahan perbaikan / rekomendasi..." required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-                            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                                <input type="checkbox" id="sup-auto-rtl" checked class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500">
-                                <span>Otomatis buat kartu Rencana Tindak Lanjut (RTL) dari temuan ini</span>
-                            </label>
-                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-sm transition">
-                                <i class="fa-solid fa-check-circle"></i> Simpan Hasil Supervisi
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                ` : `
-                <!-- Tampilan Rekapitulasi, Jadwal, Temuan & Tindak Lanjut Supervisi -->
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h4 class="text-sm font-extrabold text-slate-800">Daftar Rekapitulasi Supervisi Ruang Dahlia (${appData.supervisions.length} Sesi)</h4>
-                        <button onclick="activeSupervisiSubTab='penilaian'; renderCurrentTab()" class="px-3.5 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">+ Input Supervisi Baru</button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        ${appData.supervisions.map(sup => `
-                            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs space-y-3">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div>
-                                        <span class="text-[11px] font-bold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full">Tgl: ${sup.tanggal}</span>
-                                        <h5 class="text-sm font-extrabold text-slate-800 mt-1.5">${sup.topik}</h5>
-                                        <p class="text-xs text-slate-500 font-semibold">Perawat: <strong class="text-slate-700">${sup.perawat}</strong></p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xl font-extrabold ${sup.skor >= 85 ? 'text-emerald-600' : 'text-amber-600'}">${sup.skor}%</div>
-                                        <span class="text-[10px] font-bold text-slate-400">Skor Kepatuhan</span>
-                                    </div>
-                                </div>
-                                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60 text-xs space-y-1.5">
-                                    <p><strong class="text-slate-700">Temuan:</strong> <span class="text-slate-600">${sup.temuan}</span></p>
-                                    <p><strong class="text-brand-800">Rekomendasi:</strong> <span class="text-slate-600">${sup.rekomendasi}</span></p>
-                                </div>
-                                <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
-                                    <span class="px-2.5 py-1 rounded-lg font-bold text-[11px] ${sup.statusTindakLanjut.includes('Selesai') ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}">
-                                        ${sup.statusTindakLanjut}
-                                    </span>
-                                    ${!sup.statusTindakLanjut.includes('RTL') ? `
-                                        <button onclick="pushSupervisiToRTL('${sup.id}')" class="text-brand-600 hover:underline font-extrabold flex items-center gap-1">
-                                            <i class="fa-solid fa-share-from-square"></i> Kirim ke RTL
-                                        </button>
-                                    ` : `<span class="text-slate-400 text-[11px] font-semibold"><i class="fa-solid fa-check"></i> Terintegrasi RTL</span>`}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-                `}
-            `;
-        }
-
-        function setSupervisiScore(idx, val) {
-            supervisiChecklistScores[idx] = val;
-            renderCurrentTab();
-        }
-
-        function submitSupervisiForm(e) {
-            e.preventDefault();
-            const perawat = document.getElementById('sup-perawat').value;
-            const topik = document.getElementById('sup-topik').value.trim();
-            const tanggal = document.getElementById('sup-tanggal').value;
-            const temuan = document.getElementById('sup-temuan').value.trim();
-            const rekomendasi = document.getElementById('sup-rekomendasi').value.trim();
-            const autoRtl = document.getElementById('sup-auto-rtl').checked;
-
-            const totalNilai = supervisiChecklistScores.reduce((a, b) => a + b, 0);
-            const skor = Math.round((totalNilai / (SUPERVISI_CHECKLIST_ITEMS.length * 5)) * 100);
-
-            const newSup = {
-                id: 'sup' + Date.now(),
-                tanggal,
-                jadwalBerikutnya: '2026-12-03',
-                perawat,
-                topik,
-                skor,
-                temuan,
-                rekomendasi,
-                statusTindakLanjut: autoRtl ? 'Sudah Masuk RTL' : 'Menunggu Tindak Lanjut'
-            };
-            appData.supervisions.unshift(newSup);
-
-            if (autoRtl) {
-                appData.rtls.unshift({
-                    id: 'rtl' + Date.now(),
-                    kategori: 'Pelayanan',
-                    judul: `Tindak Lanjut Supervisi: ${topik}`,
-                    masalah: `${temuan} (Perawat: ${perawat})`,
-                    tindakan: rekomendasi,
-                    eviden: `Hasil supervisi tgl ${tanggal} (Skor ${skor}%).`,
-                    progres: 20,
-                    pic: `${perawat} & Katim`,
-                    tenggat: '2026-12-05',
-                    status: 'Dalam Proses'
-                });
-            }
-
-            saveData();
-            activeSupervisiSubTab = 'skor';
-            renderCurrentTab();
-            showToast(autoRtl ? 'Supervisi tersimpan & otomatis masuk ke Rencana Tindak Lanjut (RTL)!' : 'Hasil supervisi berhasil disimpan.');
-        }
-
-        function pushSupervisiToRTL(supId) {
-            const sup = appData.supervisions.find(s => s.id === supId);
-            if (!sup) return;
-            sup.statusTindakLanjut = 'Sudah Masuk RTL';
-            appData.rtls.unshift({
-                id: 'rtl' + Date.now(),
-                kategori: 'Pelayanan',
-                judul: `Tindak Lanjut Supervisi: ${sup.topik}`,
-                masalah: `${sup.temuan} (${sup.perawat})`,
-                tindakan: sup.rekomendasi,
-                eviden: `Dokumentasi supervisi tgl ${sup.tanggal} (Skor ${sup.skor}%).`,
-                progres: 25,
-                pic: sup.perawat,
-                tenggat: '2026-12-05',
-                status: 'Dalam Proses'
-            });
-            saveData();
-            renderCurrentTab();
-            showToast('Temuan supervisi berhasil dikirim ke modul RTL!');
-        }
-
-        // =========================================================================
-        // MODUL 5: MONITORING INDIKATOR MUTU (INM & MUTU UNIT)
-        // =========================================================================
-        let mutuSearchQuery = '';
-
-        function renderMutu() {
-            const filtered = appData.qualityIndicators.filter(q =>
-                q.nama.toLowerCase().includes(mutuSearchQuery.toLowerCase()) ||
-                q.kode.toLowerCase().includes(mutuSearchQuery.toLowerCase())
-            );
-
-            return `
-                <!-- Grafik Batang Horizontal Capaian vs Target -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs space-y-4">
+                <!-- Bottom Section: Formasi Dinas Hari Ini (Clean Pill Table like "Recent Sales List") -->
+                <div class="bg-[#f8fdfc] rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <h3 class="text-base sm:text-lg font-extrabold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-line text-brand-600"></i> Grafik Capaian vs Target Mutu Ruangan (Periode ${MONTH_NAMES[appData.selectedMonth]} ${appData.selectedYear})
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Perhitungan persentase otomatis dari Numerator & Denominator sesuai definisi operasional INM.</p>
+                            <h3 class="text-base font-extrabold text-brand-950">Formasi Dinas Hari Ini — Tgl ${TODAY_DAY} Nov 2026</h3>
+                            <p class="text-xs text-slate-500">Klik badge shift untuk mengubah jadwal hari ini atau klik Supervisi untuk penilaian langsung</p>
                         </div>
-                        <button onclick="openAddMutuModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5 shrink-0 transition">
-                            <i class="fa-solid fa-plus"></i> Input / Tambah Indikator
-                        </button>
-                    </div>
-
-                    <div class="space-y-3.5 pt-2">
-                        ${appData.qualityIndicators.map(q => {
-                            const pct = q.denominator > 0 ? Number(((q.numerator / q.denominator) * 100).toFixed(2)) : 0;
-                            const achieved = q.tipe === 'min' ? pct >= q.target : pct <= q.target;
-                            const barWidth = q.tipe === 'max' ? Math.min(100, Math.max(2, pct * 10)) : Math.min(100, pct);
-
-                            return `
-                            <div class="space-y-1">
-                                <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                                    <div class="flex items-center gap-2">
-                                        <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 font-extrabold text-[10px]">${q.kode}</span>
-                                        <span class="font-bold text-slate-800">${q.nama}</span>
-                                        <span class="text-[11px] text-slate-400">(${q.kategori})</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 font-bold">
-                                        <span class="text-slate-500 text-[11px]">Num: ${q.numerator} / Den: ${q.denominator}</span>
-                                        <span class="text-slate-500 text-[11px]">Target: ${q.tipe === 'max' ? '≤' : '≥'}${q.target}%</span>
-                                        <span class="font-extrabold ${achieved ? 'text-emerald-600' : 'text-rose-600'}">${pct}%</span>
-                                    </div>
-                                </div>
-                                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full transition-all duration-500 ${achieved ? 'bg-gradient-to-r from-emerald-500 to-brand-500' : 'bg-gradient-to-r from-amber-500 to-rose-500'}" style="width: ${barWidth}%"></div>
-                                </div>
-                            </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </div>
-
-                <!-- Tabel Rincian Data & Analisis Mutu Ruangan -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-                    <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <h4 class="text-sm font-extrabold text-slate-800">Rincian Data & Analisis Mutu Ruang Dahlia</h4>
-                        <div class="relative w-full sm:w-64">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" value="${mutuSearchQuery}" oninput="mutuSearchQuery=this.value; renderCurrentTab()" placeholder="Cari indikator mutu..." class="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-brand-500">
+                        <div class="flex items-center gap-2">
+                            <button onclick="switchTab('rtl')" class="px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-teal-50 transition">
+                                <i class="fa-solid fa-list-check text-brand-700 mr-1"></i> RTL (${appData.rtls.length})
+                            </button>
+                            <button onclick="switchTab('jadwal')" class="px-3.5 py-1.5 rounded-full bg-brand-950 text-white text-xs font-bold hover:bg-brand-900 transition">
+                                Buka Jadwal Lengkap
+                            </button>
                         </div>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
-                                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-500 uppercase">
-                                    <th class="py-3 px-4 min-w-[220px]">Kode & Indikator Mutu</th>
-                                    <th class="py-3 px-3 text-center">Target</th>
-                                    <th class="py-3 px-3 text-center">Num / Den</th>
-                                    <th class="py-3 px-3 text-center">Capaian</th>
-                                    <th class="py-3 px-3 text-center">Status</th>
-                                    <th class="py-3 px-4 min-w-[240px]">Analisis & Tindak Lanjut</th>
+                                <tr class="border-b border-slate-200/80 text-[11px] font-bold text-slate-400">
+                                    <th class="py-3 px-4">Nama Perawat</th>
+                                    <th class="py-3 px-3">Jabatan</th>
+                                    <th class="py-3 px-3">Jenjang</th>
+                                    <th class="py-3 px-3 text-center">Shift Hari Ini</th>
+                                    <th class="py-3 px-3">Jam Kerja</th>
                                     <th class="py-3 px-4 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                ${filtered.map(q => {
-                                    const pct = q.denominator > 0 ? Number(((q.numerator / q.denominator) * 100).toFixed(2)) : 0;
-                                    const achieved = q.tipe === 'min' ? pct >= q.target : pct <= q.target;
-
+                            <tbody class="divide-y divide-slate-200/60">
+                                ${visibleNurses.map(n => {
+                                    const code = (sched[n.id] && sched[n.id][TODAY_DAY]) || 'L';
+                                    const sc = SHIFT_CONFIG[code] || SHIFT_CONFIG['L'];
                                     return `
-                                    <tr class="hover:bg-slate-50/80">
-                                        <td class="py-3.5 px-4">
-                                            <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 font-extrabold text-[10px]">${q.kode}</span>
-                                            <p class="font-bold text-slate-800 mt-1">${q.nama}</p>
-                                            <p class="text-[10px] text-slate-400">${q.kategori}</p>
+                                    <tr class="hover:bg-white/80 transition">
+                                        <td class="py-3 px-4">
+                                            <p class="font-bold text-brand-950">${n.nama}</p>
+                                            <p class="text-[10px] text-slate-400">NIP. ${n.nip}</p>
                                         </td>
-                                        <td class="py-3.5 px-3 text-center font-extrabold text-slate-700">${q.tipe === 'max' ? '≤' : ''}${q.target}%</td>
-                                        <td class="py-3.5 px-3 text-center font-semibold text-slate-600">${q.numerator} / ${q.denominator}</td>
-                                        <td class="py-3.5 px-3 text-center font-extrabold ${achieved ? 'text-emerald-600' : 'text-rose-600'}">${pct}%</td>
-                                        <td class="py-3.5 px-3 text-center">
-                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${achieved ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
-                                                ${achieved ? 'Tercapai' : 'Perlu Evaluasi'}
-                                            </span>
+                                        <td class="py-3 px-3 font-semibold text-slate-700">${n.jabatan}</td>
+                                        <td class="py-3 px-3">
+                                            <span class="px-2.5 py-0.5 rounded-full bg-teal-900/10 text-brand-950 font-bold text-[10px]">${n.pk}</span>
                                         </td>
-                                        <td class="py-3.5 px-4">
-                                            <p class="font-semibold text-slate-700 line-clamp-2">${q.analisis}</p>
-                                            <p class="text-[11px] text-brand-700 mt-0.5 line-clamp-1"><strong>RTL:</strong> ${q.rtl}</p>
+                                        <td class="py-3 px-3 text-center">
+                                            <button onclick="cycleTodayShift('${n.id}')" title="Klik untuk ganti shift" class="px-3 py-1 rounded-full font-extrabold text-[11px] ${sc.bg} ${sc.text} hover:opacity-80 transition">
+                                                ${sc.label}
+                                            </button>
                                         </td>
-                                        <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                            <button onclick="openEditMutuModal('${q.id}')" class="p-1.5 rounded-lg text-slate-500 hover:bg-brand-50 hover:text-brand-700 transition" title="Input Num/Den & Edit">
-                                                <i class="fa-solid fa-pen"></i>
+                                        <td class="py-3 px-3 font-medium text-slate-600 whitespace-nowrap">${sc.jam}</td>
+                                        <td class="py-3 px-4 text-right">
+                                            <button onclick="openQuickSupervisiFor('${n.nama}')" class="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:bg-brand-950 hover:text-white text-slate-700 font-bold text-[11px] transition">
+                                                Supervisi
                                             </button>
                                         </td>
                                     </tr>
@@ -2199,7 +1185,7 @@
                         <div class="sm:col-span-3">
                             <select onchange="rtlCategoryFilter=this.value; renderCurrentTab()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 outline-none">
                                 <option value="Semua" ${rtlCategoryFilter === 'Semua' ? 'selected' : ''}>Semua Kategori</option>
-                                <option value="SDM" ${rtlCategoryFilter === 'SDM' ? 'selected' : ''}>SDM</option>
+                                <option value="SDM" ${rtlCategoryFilter === 'Semua' ? '' : rtlCategoryFilter === 'SDM' ? 'selected' : ''}>SDM</option>
                                 <option value="Fasilitas & Alat" ${rtlCategoryFilter === 'Fasilitas & Alat' ? 'selected' : ''}>Fasilitas & Alat</option>
                                 <option value="Pelayanan" ${rtlCategoryFilter === 'Pelayanan' ? 'selected' : ''}>Pelayanan</option>
                                 <option value="Administrasi" ${rtlCategoryFilter === 'Administrasi' ? 'selected' : ''}>Administrasi</option>
@@ -2693,10 +1679,15 @@
                                         <td class="py-3 px-3 text-center">
                                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${n.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${n.status}</span>
                                         </td>
-                                        <td class="py-3 px-4 text-right">
-                                            <button onclick="openEditSTRModal('${n.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-600 hover:text-white text-slate-700 font-bold text-[11px] transition">
-                                                Perpanjang STR
-                                            </button>
+                                        <td class="py-3 px-4 text-right whitespace-nowrap">
+                                            <div class="inline-flex items-center gap-1.5">
+                                                <button onclick="openEditSTRModal('${n.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-600 hover:text-white text-slate-700 font-bold text-[11px] transition">
+                                                    Perpanjang STR
+                                                </button>
+                                                <button onclick="confirmDeleteNurse('${n.id}')" title="Hapus Perawat" class="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white transition">
+                                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                     `;
