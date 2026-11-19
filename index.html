@@ -1031,6 +1031,1103 @@
             `;
         }
 
+        function cycleTodayShift(nurseId) {
+            const sched = ensureMonthSchedule(2026, 10);
+            if (!sched[nurseId]) sched[nurseId] = {};
+            const current = sched[nurseId][TODAY_DAY] || 'L';
+            const nextIdx = (SHIFT_ORDER.indexOf(current) + 1) % SHIFT_ORDER.length;
+            sched[nurseId][TODAY_DAY] = SHIFT_ORDER[nextIdx];
+            saveData();
+            renderCurrentTab();
+            showToast(`Shift hari ini diubah menjadi ${SHIFT_CONFIG[SHIFT_ORDER[nextIdx]].label}.`);
+        }
+
+        function openEditProfileModal() {
+            openModal(`
+                <div class="p-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-full bg-brand-950 text-white flex items-center justify-center text-base">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-extrabold text-brand-950">Pengaturan Kepala Ruangan & Unit</h3>
+                            <p class="text-xs text-slate-500">Perubahan nama otomatis tersinkron ke header, jadwal dinas, dan kop tanda tangan laporan resmi.</p>
+                        </div>
+                    </div>
+                    <form onsubmit="saveProfileSettings(event)" class="space-y-4 mt-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kepala Ruangan & Gelar</label>
+                                <input type="text" id="set-karu-nama" value="${appData.ruangan.karu}" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">NIP Kepala Ruangan</label>
+                                <input type="text" id="set-karu-nip" value="${appData.ruangan.nipKaru}" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Ruangan / Unit Pelayanan</label>
+                            <input type="text" id="set-ruang-nama" value="${appData.ruangan.nama}" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kepala Bidang Keperawatan</label>
+                                <input type="text" id="set-kabid-nama" value="${appData.ruangan.kabid}" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">NIP Kepala Bidang Keperawatan</label>
+                                <input type="text" id="set-kabid-nip" value="${appData.ruangan.nipKabid}" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2 pt-2">
+                            <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
+                            <button type="submit" class="px-5 py-2 rounded-full bg-brand-950 text-white text-xs font-bold">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            `);
+        }
+
+        function saveProfileSettings(e) {
+            e.preventDefault();
+            const oldKaru = appData.ruangan.karu;
+            const newKaru = document.getElementById('set-karu-nama').value.trim();
+            const newNipKaru = document.getElementById('set-karu-nip').value.trim();
+
+            appData.ruangan.karu = newKaru;
+            appData.ruangan.nipKaru = newNipKaru;
+            appData.ruangan.nama = document.getElementById('set-ruang-nama').value.trim();
+            appData.ruangan.kabid = document.getElementById('set-kabid-nama').value.trim();
+            appData.ruangan.nipKabid = document.getElementById('set-kabid-nip').value.trim();
+
+            const karuNurse = appData.nurses.find(n => n.jabatan === 'Kepala Ruangan' || n.nama === oldKaru);
+            if (karuNurse) {
+                karuNurse.nama = newKaru;
+                karuNurse.nip = newNipKaru;
+            }
+
+            saveData();
+            closeModal();
+            updateSidebarBadges();
+            renderCurrentTab();
+            showToast(`Profil Kepala Ruangan berhasil diperbarui menjadi ${newKaru}.`);
+        }
+
+        function openEditBorModal() {
+            openModal(`
+                <div class="p-6">
+                    <h3 class="text-lg font-extrabold text-brand-950">Update Keterisian Tempat Tidur (BOR)</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">${appData.ruangan.nama}</p>
+                    <form onsubmit="saveBorSettings(event)" class="space-y-4 mt-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Kapasitas Tempat Tidur</label>
+                                <input type="number" id="bor-kapasitas" min="1" value="${appData.ruangan.kapasitasBed}" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Bed Terisi</label>
+                                <input type="number" id="bor-terisi" min="0" value="${appData.ruangan.terisiBed}" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-bold text-brand-700">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2 pt-2">
+                            <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
+                            <button type="submit" class="px-5 py-2 rounded-full bg-brand-950 text-white text-xs font-bold">Simpan BOR</button>
+                        </div>
+                    </form>
+                </div>
+            `);
+        }
+
+        function saveBorSettings(e) {
+            e.preventDefault();
+            const kap = Math.max(1, parseInt(document.getElementById('bor-kapasitas').value, 10) || 32);
+            const ter = Math.min(kap, Math.max(0, parseInt(document.getElementById('bor-terisi').value, 10) || 0));
+            appData.ruangan.kapasitasBed = kap;
+            appData.ruangan.terisiBed = ter;
+            saveData();
+            closeModal();
+            renderCurrentTab();
+            showToast(`BOR Ruang Dahlia diperbarui (${Math.round((ter / kap) * 100)}%).`);
+        }
+
+        function openQuickSupervisiFor(nurseName) {
+            activeSupervisiSubTab = 'penilaian';
+            switchTab('supervisi');
+            setTimeout(() => {
+                const selectEl = document.getElementById('sup-perawat');
+                if (selectEl) selectEl.value = nurseName;
+            }, 50);
+        }
+
+        // =========================================================================
+        // MODUL 2: JADWAL DINAS & REKAP KEHADIRAN BULANAN
+        // =========================================================================
+        function renderJadwal() {
+            const year = appData.selectedYear;
+            const month = appData.selectedMonth;
+            const sched = ensureMonthSchedule(year, month);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const conflicts = detectScheduleConflicts(year, month);
+
+            const conflictSet = new Set();
+            conflicts.forEach(c => {
+                conflictSet.add(`${c.nurseId}-${c.dayFrom}`);
+                conflictSet.add(`${c.nurseId}-${c.dayTo}`);
+            });
+
+            let daysHeaderHTML = '';
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateObj = new Date(year, month, d);
+                const dayName = DAY_NAMES[dateObj.getDay()];
+                const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+                const isToday = (year === 2026 && month === 10 && d === TODAY_DAY);
+                daysHeaderHTML += `
+                    <th class="py-2 px-1 text-center min-w-[34px] border-l border-slate-200 ${isToday ? 'bg-brand-950 text-white' : isWeekend ? 'bg-rose-50 text-rose-700' : 'bg-slate-50 text-slate-600'}">
+                        <div class="text-[9px] font-semibold uppercase">${dayName}</div>
+                        <div class="text-xs font-extrabold">${d}</div>
+                    </th>
+                `;
+            }
+
+            let dailyRecapHTML = '';
+            for (let d = 1; d <= daysInMonth; d++) {
+                let p = 0, s = 0, m = 0;
+                appData.nurses.forEach(n => {
+                    const code = sched[n.id]?.[d] || 'L';
+                    if (code === 'P') p++;
+                    else if (code === 'S') s++;
+                    else if (code === 'M') m++;
+                });
+                const lowStaff = (p < 2 || s < 2 || m < 1);
+                dailyRecapHTML += `
+                    <td class="py-2 px-1 text-center text-[10px] font-extrabold border-l border-slate-200 ${lowStaff ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'}" title="Pagi: ${p}, Sore: ${s}, Malam: ${m}">
+                        ${p}/${s}/${m}
+                    </td>
+                `;
+            }
+
+            return `
+                <!-- Control Bar Jadwal -->
+                <div class="bg-[#f8fdfc] rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-base sm:text-lg font-extrabold text-brand-950 flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days text-brand-700"></i> Jadwal Dinas & Rekapitulasi Kehadiran Bulanan
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Klik pada sel tanggal untuk mengubah shift secara instan. Sistem otomatis mendeteksi bentrok <strong>Shift Malam (M) ke Pagi (P)</strong>.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select onchange="changeScheduleMonth(this.value)" class="px-3.5 py-2 rounded-full border border-slate-300 text-xs font-bold text-slate-700 bg-white outline-none">
+                                ${[9, 10, 11].map(mIdx => `
+                                    <option value="${mIdx}" ${month === mIdx ? 'selected' : ''}>${MONTH_NAMES[mIdx]} ${year}</option>
+                                `).join('')}
+                            </select>
+                            <button onclick="applyAutoRotationPattern()" class="px-3.5 py-2 rounded-full bg-[#d9f2b4] hover:opacity-90 text-brand-950 text-xs font-extrabold flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Pola Otomatis
+                            </button>
+                            <button onclick="openAddNurseModal()" class="px-3.5 py-2 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-user-plus"></i> + Perawat
+                            </button>
+                            <button onclick="exportJadwalCSV()" class="px-3.5 py-2 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-file-csv"></i> Ekspor
+                            </button>
+                            <button onclick="selectedReportType='jadwal'; activeSafetySubTab='laporan'; switchTab('keselamatan')" class="px-4 py-2 rounded-full bg-brand-950 hover:bg-brand-900 text-white text-xs font-bold flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-print"></i> Cetak Jadwal
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Legenda Shift -->
+                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/60 text-[11px]">
+                        ${SHIFT_ORDER.map(code => {
+                            const cfg = SHIFT_CONFIG[code];
+                            return `<span class="px-2.5 py-1 rounded-full font-bold border ${cfg.bg} ${cfg.text} ${cfg.border}">${code} = ${cfg.label} (${cfg.hours}j)</span>`;
+                        }).join('')}
+                        <span class="ml-auto text-slate-500 font-semibold">Standar Jam: <strong class="text-brand-950">160 - 176 Jam / Bulan</strong></span>
+                    </div>
+
+                    <!-- Alert Deteksi Shift Malam ke Pagi -->
+                    ${conflicts.length > 0 ? `
+                    <div class="bg-rose-50 border border-rose-300 rounded-2xl p-3.5 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                        </div>
+                        <div class="text-xs text-rose-900">
+                            <p class="font-extrabold">Peringatan Keselamatan Kerja: Ditemukan ${conflicts.length} Jadwal Shift Malam (M) langsung ke Pagi (P)!</p>
+                            <ul class="list-disc list-inside mt-1 space-y-0.5 text-rose-800">
+                                ${conflicts.map(c => `<li><strong>${c.nurseName}</strong>: Tanggal ${c.dayFrom} (Malam) → Tanggal ${c.dayTo} (Pagi).</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    ` : `
+                    <div class="bg-[#d9f2b4]/50 border border-lime-300 rounded-2xl px-4 py-2.5 flex items-center gap-2 text-xs text-brand-950 font-semibold">
+                        <i class="fa-solid fa-circle-check text-brand-700"></i> Tidak ada bentrok jadwal Shift Malam ke Pagi pada bulan ${MONTH_NAMES[month]} ${year}.
+                    </div>
+                    `}
+                </div>
+
+                <!-- Matriks Kalender Bulanan -->
+                <div class="bg-white rounded-3xl border border-teal-900/10 shadow-2xs overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200">
+                                    <th class="sticky left-0 z-20 bg-slate-50 py-3 px-4 text-left font-extrabold text-brand-950 min-w-[215px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.08)]">Nama Perawat & Jabatan</th>
+                                    ${daysHeaderHTML}
+                                    <th class="py-2 px-2 text-center bg-emerald-50 text-emerald-800 font-extrabold border-l border-slate-200 min-w-[36px]">P</th>
+                                    <th class="py-2 px-2 text-center bg-amber-50 text-amber-800 font-extrabold border-l border-slate-200 min-w-[36px]">S</th>
+                                    <th class="py-2 px-2 text-center bg-indigo-50 text-indigo-800 font-extrabold border-l border-slate-200 min-w-[36px]">M</th>
+                                    <th class="py-2 px-2 text-center bg-slate-100 text-slate-700 font-extrabold border-l border-slate-200 min-w-[36px]">L/C</th>
+                                    <th class="py-2 px-3 text-center bg-brand-950 text-white font-extrabold border-l border-slate-200 min-w-[64px]">Total Jam</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                ${appData.nurses.map(nurse => {
+                                    let countP = 0, countS = 0, countM = 0, countOff = 0, totalHours = 0;
+                                    let cellsHTML = '';
+
+                                    for (let d = 1; d <= daysInMonth; d++) {
+                                        const code = (sched[nurse.id] && sched[nurse.id][d]) || 'L';
+                                        const cfg = SHIFT_CONFIG[code] || SHIFT_CONFIG['L'];
+                                        if (code === 'P') countP++;
+                                        else if (code === 'S') countS++;
+                                        else if (code === 'M') countM++;
+                                        else countOff++;
+                                        totalHours += cfg.hours;
+
+                                        const isConflict = conflictSet.has(`${nurse.id}-${d}`);
+                                        cellsHTML += `
+                                            <td class="p-1 text-center border-l border-slate-100 ${isConflict ? 'bg-rose-200/80' : ''}">
+                                                <button onclick="cycleScheduleCell('${nurse.id}', ${d})" title="${nurse.nama} — Tgl ${d}: ${cfg.label}" class="shift-cell w-7 h-7 rounded-lg font-extrabold text-[11px] flex items-center justify-center mx-auto border ${cfg.bg} ${cfg.text} ${isConflict ? 'ring-2 ring-rose-600 border-rose-600' : cfg.border}">
+                                                    ${code}
+                                                </button>
+                                            </td>
+                                        `;
+                                    }
+
+                                    return `
+                                    <tr class="hover:bg-slate-50/80 group">
+                                        <td class="sticky left-0 z-10 bg-white group-hover:bg-slate-50 py-2.5 px-4 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)]">
+                                            <p class="font-bold text-brand-950 truncate max-w-[185px]">${nurse.nama}</p>
+                                            <p class="text-[10px] text-slate-400 font-semibold">${nurse.jabatan} • ${nurse.pk}</p>
+                                        </td>
+                                        ${cellsHTML}
+                                        <td class="py-2 px-1 text-center font-bold text-emerald-700 bg-emerald-50/40 border-l border-slate-200">${countP}</td>
+                                        <td class="py-2 px-1 text-center font-bold text-amber-700 bg-amber-50/40 border-l border-slate-200">${countS}</td>
+                                        <td class="py-2 px-1 text-center font-bold text-indigo-700 bg-indigo-50/40 border-l border-slate-200">${countM}</td>
+                                        <td class="py-2 px-1 text-center font-bold text-slate-600 bg-slate-50 border-l border-slate-200">${countOff}</td>
+                                        <td class="py-2 px-2 text-center font-extrabold border-l border-slate-200 ${totalHours > 180 ? 'text-rose-600 bg-rose-50' : 'text-brand-950 bg-teal-50/40'}">${totalHours}j</td>
+                                    </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                            <tfoot>
+                                <tr class="border-t-2 border-slate-300 bg-slate-100">
+                                    <td class="sticky left-0 z-10 bg-slate-100 py-2.5 px-4 font-extrabold text-brand-950 text-[11px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.08)]">
+                                        Formasi Staf Siaga (P / S / M)
+                                    </td>
+                                    ${dailyRecapHTML}
+                                    <td colspan="5" class="py-2 px-3 text-center text-[10px] font-bold text-slate-500 border-l border-slate-200">
+                                        Rekap Otomatis Bulanan
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function changeScheduleMonth(monthStr) {
+            appData.selectedMonth = parseInt(monthStr, 10);
+            ensureMonthSchedule(appData.selectedYear, appData.selectedMonth);
+            saveData();
+            renderCurrentTab();
+        }
+
+        function cycleScheduleCell(nurseId, day) {
+            const sched = ensureMonthSchedule();
+            if (!sched[nurseId]) sched[nurseId] = {};
+            const cur = sched[nurseId][day] || 'L';
+            const next = SHIFT_ORDER[(SHIFT_ORDER.indexOf(cur) + 1) % SHIFT_ORDER.length];
+            sched[nurseId][day] = next;
+            saveData();
+            renderCurrentTab();
+        }
+
+        function applyAutoRotationPattern() {
+            openConfirmModal(
+                'Terapkan Pola Rotasi Otomatis?',
+                `Jadwal bulan ${MONTH_NAMES[appData.selectedMonth]} ${appData.selectedYear} akan disusun ulang menggunakan pola rotasi ergonomis (Pagi → Sore → Malam → Lepas Jaga) tanpa bentrok Malam-ke-Pagi.`,
+                () => {
+                    const key = getMonthKey();
+                    appData.schedules[key] = generateInitialMonthSchedule(appData.nurses, appData.selectedYear, appData.selectedMonth);
+                    saveData();
+                    renderCurrentTab();
+                    showToast('Pola rotasi jadwal otomatis berhasil diterapkan!');
+                }
+            );
+        }
+
+        function openAddNurseModal() {
+            openModal(`
+                <div class="p-6">
+                    <h3 class="text-lg font-extrabold text-brand-950">Tambah Perawat Ruangan</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Tambahkan perawat baru ke daftar SDM & Jadwal Dinas Ruang Dahlia.</p>
+                    <form onsubmit="saveNewNurse(event)" class="space-y-4 mt-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
+                                <input type="text" id="new-nurse-nama" required placeholder="Contoh: Ns. Rahmat Hidayat, S.Kep" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">NIP / NRP</label>
+                                <input type="text" id="new-nurse-nip" required placeholder="19980101 202401 1 001" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Jabatan</label>
+                                <select id="new-nurse-jabatan" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
+                                    <option>Perawat Pelaksana</option>
+                                    <option>Ketua Tim (Katim)</option>
+                                    <option>Clinical Instructor (CI)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Jenjang Klinis</label>
+                                <select id="new-nurse-pk" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
+                                    <option>PK I</option>
+                                    <option>PK II</option>
+                                    <option>PK III</option>
+                                    <option>Pra PK</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nomor STR</label>
+                                <input type="text" id="new-nurse-str" required value="STR-6403-2030-0991" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Masa Berlaku STR</label>
+                                <input type="date" id="new-nurse-strexp" required value="2030-12-31" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold outline-none">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2 pt-2">
+                            <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
+                            <button type="submit" class="px-5 py-2 rounded-full bg-brand-950 text-white text-xs font-bold">Simpan Perawat</button>
+                        </div>
+                    </form>
+                </div>
+            `);
+        }
+
+        function saveNewNurse(e) {
+            e.preventDefault();
+            const id = 'n' + Date.now();
+            const nama = document.getElementById('new-nurse-nama').value.trim();
+            const nip = document.getElementById('new-nurse-nip').value.trim();
+            const jabatan = document.getElementById('new-nurse-jabatan').value;
+            const pk = document.getElementById('new-nurse-pk').value;
+            const strNo = document.getElementById('new-nurse-str').value.trim();
+            const strExp = document.getElementById('new-nurse-strexp').value;
+
+            appData.nurses.push({
+                id, nama, nip, pendidikan: nama.startsWith('Ns.') ? 'S1 Keperawatan + Ners' : 'D3 Keperawatan',
+                pk, jabatan, strNo, strExp, status: 'Aktif'
+            });
+
+            Object.keys(appData.schedules).forEach(k => {
+                appData.schedules[k][id] = {};
+                for (let d = 1; d <= 31; d++) {
+                    appData.schedules[k][id][d] = ['P', 'S', 'M', 'L', 'L'][d % 5];
+                }
+            });
+
+            saveData();
+            closeModal();
+            renderCurrentTab();
+            showToast(`${nama} berhasil ditambahkan ke Ruang Dahlia.`);
+        }
+
+        function confirmDeleteNurse(nurseId) {
+            const nurse = appData.nurses.find(n => n.id === nurseId);
+            if (!nurse) return;
+            openConfirmModal(
+                'Hapus Perawat dari Ruangan?',
+                `Apakah Anda yakin ingin menghapus <strong>${nurse.nama}</strong> (${nurse.jabatan}) dari daftar perawat dan jadwal dinas Ruang Dahlia?`,
+                () => {
+                    appData.nurses = appData.nurses.filter(n => n.id !== nurseId);
+                    Object.keys(appData.schedules).forEach(k => {
+                        if (appData.schedules[k] && appData.schedules[k][nurseId]) {
+                            delete appData.schedules[k][nurseId];
+                        }
+                    });
+                    saveData();
+                    renderCurrentTab();
+                    showToast(`${nurse.nama} telah dihapus dari daftar jadwal dinas.`, 'warning');
+                }
+            );
+        }
+
+        function exportJadwalCSV() {
+            const sched = ensureMonthSchedule();
+            const daysInMonth = new Date(appData.selectedYear, appData.selectedMonth + 1, 0).getDate();
+            let headers = ['No', 'Nama Perawat', 'Jabatan', 'PK'];
+            for (let d = 1; d <= daysInMonth; d++) headers.push(`Tgl ${d}`);
+            headers.push('Total Pagi', 'Total Sore', 'Total Malam', 'Total Libur/Cuti', 'Total Jam');
+
+            let rows = [headers.join(',')];
+            appData.nurses.forEach((n, idx) => {
+                let p = 0, s = 0, m = 0, l = 0, jam = 0;
+                let line = [idx + 1, `"${n.nama}"`, `"${n.jabatan}"`, n.pk];
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const code = sched[n.id]?.[d] || 'L';
+                    line.push(code);
+                    if (code === 'P') p++;
+                    else if (code === 'S') s++;
+                    else if (code === 'M') m++;
+                    else l++;
+                    jam += (SHIFT_CONFIG[code]?.hours || 0);
+                }
+                line.push(p, s, m, l, jam);
+                rows.push(line.join(','));
+            });
+
+            downloadCSV(rows.join('\n'), `Jadwal_Dinas_Ruang_Dahlia_${MONTH_NAMES[appData.selectedMonth]}_${appData.selectedYear}.csv`);
+        }
+
+        // =========================================================================
+        // MODUL 3: KALKULATOR BEBAN KERJA & KEBUTUHAN TENAGA KEPERAWATAN
+        // =========================================================================
+        let wlInputs = {
+            tanggal: TODAY_STR,
+            minimal: 6,
+            partial: 12,
+            totalCare: 6,
+            riil: 9,
+            catatan: 'Catatan pengaturan jadwal dinas dan antisipasi lonjakan pasien.'
+        };
+
+        function calculateWorkloadStats(method, minP, parP, totP, riil) {
+            const totalPasien = minP + parP + totP;
+            let kebutuhan = 0, pagi = 0, sore = 0, malam = 0, lossDay = 0, nonNursing = 0, rumusDesc = '';
+
+            if (method === 'Douglas') {
+                const pCalc = minP * 0.17 + parP * 0.27 + totP * 0.36;
+                const sCalc = minP * 0.14 + parP * 0.15 + totP * 0.30;
+                const mCalc = minP * 0.07 + parP * 0.10 + totP * 0.20;
+                const jagaHarian = pCalc + sCalc + mCalc;
+                lossDay = (78 / 287) * jagaHarian;
+                kebutuhan = +(jagaHarian + lossDay).toFixed(1);
+                pagi = Math.ceil(pCalc);
+                sore = Math.ceil(sCalc);
+                malam = Math.ceil(mCalc);
+                rumusDesc = 'Metode Douglas: (Pagi: 0.17/0.27/0.36, Sore: 0.14/0.15/0.30, Malam: 0.07/0.10/0.20) + Faktor Libur (78/287).';
+            } else if (method === 'Depkes') {
+                const jamAsuhan = (minP * 2) + (parP * 3.08) + (totP * 4.15);
+                const tenagaPokok = jamAsuhan / 7;
+                lossDay = (78 / 287) * tenagaPokok;
+                nonNursing = (tenagaPokok + lossDay) * 0.25;
+                kebutuhan = +(tenagaPokok + lossDay + nonNursing).toFixed(1);
+                pagi = Math.max(1, Math.round(tenagaPokok * 0.45));
+                sore = Math.max(1, Math.round(tenagaPokok * 0.35));
+                malam = Math.max(1, Math.round(tenagaPokok * 0.20));
+                rumusDesc = 'Metode Depkes RI: (Total Jam Asuhan / 7 Jam Kerja) + Loss Day + 25% Tugas Non-Keperawatan.';
+            } else if (method === 'Gillies') {
+                const jamPerPasien = totalPasien > 0 ? ((minP * 2 + parP * 3 + totP * 6) / totalPasien) : 3.5;
+                kebutuhan = +((jamPerPasien * totalPasien * 365) / ((365 - 78) * 7)).toFixed(1);
+                lossDay = +(kebutuhan * 0.21).toFixed(2);
+                pagi = Math.max(1, Math.round((kebutuhan * 0.72) * 0.47));
+                sore = Math.max(1, Math.round((kebutuhan * 0.72) * 0.35));
+                malam = Math.max(1, Math.round((kebutuhan * 0.72) * 0.18));
+                rumusDesc = 'Metode Gillies: (Jam Perawatan × Sensus Pasien × 365) / ((365 - Hari Libur) × Jam Kerja/Hari).';
+            } else {
+                const totalJamTahun = ((minP * 1.5) + (parP * 3.2) + (totP * 5.5)) * 365;
+                kebutuhan = +(totalJamTahun / 1760).toFixed(1);
+                lossDay = +(kebutuhan * 0.18).toFixed(2);
+                pagi = Math.max(1, Math.round(kebutuhan * 0.32));
+                sore = Math.max(1, Math.round(kebutuhan * 0.24));
+                malam = Math.max(1, Math.round(kebutuhan * 0.16));
+                rumusDesc = 'Metode FTE (Full-Time Equivalent): Total Kebutuhan Jam Perawatan Tahunan / 1.760 Jam Efektif Perawat.';
+            }
+
+            const gap = +(riil - kebutuhan).toFixed(1);
+            return { totalPasien, kebutuhan, pagi, sore, malam, lossDay: +lossDay.toFixed(2), nonNursing: +nonNursing.toFixed(2), gap, rumusDesc };
+        }
+
+        function renderBebanKerja() {
+            const calc = calculateWorkloadStats(activeWorkloadMethod, wlInputs.minimal, wlInputs.partial, wlInputs.totalCare, wlInputs.riil);
+
+            return `
+                <div class="bg-[#f8fdfc] rounded-3xl p-5 border border-teal-900/10 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-brand-950 flex items-center gap-2">
+                            <i class="fa-solid fa-calculator text-brand-700"></i> Kalkulator Kebutuhan Tenaga & Beban Kerja Keperawatan
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Hitung estimasi kebutuhan perawat berdasarkan klasifikasi tingkat ketergantungan pasien dengan 4 metode terstandar.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 bg-teal-900/5 p-1.5 rounded-full">
+                        ${['Douglas', 'Depkes', 'Gillies', 'FTE'].map(m => `
+                            <button onclick="activeWorkloadMethod='${m}'; renderCurrentTab()" class="px-4 py-1.5 rounded-full text-xs font-extrabold transition ${activeWorkloadMethod === m ? 'bg-brand-950 text-white shadow-xs' : 'text-slate-600 hover:text-brand-950'}">
+                                ${m}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <!-- Input Data Sensus Pasien -->
+                    <div class="lg:col-span-5 bg-white rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h4 class="font-extrabold text-sm text-brand-950"><i class="fa-regular fa-clock text-brand-700 mr-1.5"></i> Input Data Sensus Pasien</h4>
+                            <span class="px-2.5 py-0.5 rounded-full bg-[#d9f2b4] text-brand-950 font-bold text-[11px]">Metode ${activeWorkloadMethod}</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal Evaluasi</label>
+                            <input type="date" value="${wlInputs.tanggal}" onchange="wlInputs.tanggal=this.value" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800">
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-extrabold text-brand-950">1. Minimal Care (Mandiri)</label>
+                                <input type="number" min="0" max="50" value="${wlInputs.minimal}" oninput="wlInputs.minimal=Math.max(0, parseInt(this.value)||0); renderCurrentTab()" class="w-16 px-2.5 py-1 rounded-xl border border-slate-300 text-center font-extrabold text-sm bg-white">
+                            </div>
+                            <p class="text-[11px] text-slate-500">Pasien bisa makan/minum sendiri, ambulasi mandiri, TTV stabil (1–2 jam asuhan/hari).</p>
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-extrabold text-brand-950">2. Partial Care (Sebagian)</label>
+                                <input type="number" min="0" max="50" value="${wlInputs.partial}" oninput="wlInputs.partial=Math.max(0, parseInt(this.value)||0); renderCurrentTab()" class="w-16 px-2.5 py-1 rounded-xl border border-slate-300 text-center font-extrabold text-sm bg-white">
+                            </div>
+                            <p class="text-[11px] text-slate-500">Bantuan parsial personal hygiene, infus terpasang, observasi TTV berkala (3–4 jam asuhan/hari).</p>
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-extrabold text-brand-950">3. Total Care (Ketergantungan Total)</label>
+                                <input type="number" min="0" max="50" value="${wlInputs.totalCare}" oninput="wlInputs.totalCare=Math.max(0, parseInt(this.value)||0); renderCurrentTab()" class="w-16 px-2.5 py-1 rounded-xl border border-slate-300 text-center font-extrabold text-sm bg-white">
+                            </div>
+                            <p class="text-[11px] text-slate-500">Tirah baring, NGT/kateter, luka luas, kesadaran menurun, tidak mampu mandiri (5–6 jam asuhan/hari).</p>
+                        </div>
+
+                        <div class="flex items-center justify-between px-4 py-2.5 rounded-2xl bg-[#a8dfd6]/40 border border-teal-200">
+                            <span class="text-xs font-extrabold text-brand-950">Total Pasien Dirawat:</span>
+                            <span class="text-sm font-extrabold text-brand-950">${calc.totalPasien} Pasien</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Tenaga Perawat Riil Tersedia Saat Ini (Orang)</label>
+                            <input type="number" min="1" max="50" value="${wlInputs.riil}" oninput="wlInputs.riil=Math.max(1, parseInt(this.value)||1); renderCurrentTab()" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-extrabold text-slate-800">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Catatan / Analisis Kepala Ruangan</label>
+                            <textarea rows="2" onchange="wlInputs.catatan=this.value" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs text-slate-700">${wlInputs.catatan}</textarea>
+                        </div>
+
+                        <button onclick="saveWorkloadEvaluation()" class="w-full py-3 rounded-full bg-brand-950 hover:bg-brand-900 text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-sm transition">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Evaluasi Beban Kerja
+                        </button>
+                    </div>
+
+                    <!-- Hasil Perhitungan & Riwayat -->
+                    <div class="lg:col-span-7 space-y-5">
+                        <div class="bg-brand-950 text-white rounded-3xl p-6 shadow-md space-y-5">
+                            <div class="flex flex-wrap items-start justify-between gap-4">
+                                <div>
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-brand-300">HASIL PERHITUNGAN STANDAR ${activeWorkloadMethod.toUpperCase()}</span>
+                                    <div class="flex items-baseline gap-2 mt-1">
+                                        <span class="text-3xl sm:text-4xl font-extrabold text-white">Kebutuhan: ${calc.kebutuhan} Perawat</span>
+                                        <span class="text-xs text-slate-300">/ 24 Jam</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[11px] text-slate-300 block">Tersedia Saat Ini</span>
+                                    <span class="text-xl font-extrabold text-[#d9f2b4]">${wlInputs.riil} Orang</span>
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 rounded-2xl border ${calc.gap < 0 ? 'bg-rose-950/60 border-rose-500/40' : 'bg-emerald-950/60 border-emerald-500/40'} flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-2.5 text-xs">
+                                    <i class="fa-solid ${calc.gap < 0 ? 'fa-circle-exclamation text-rose-400' : 'fa-circle-check text-emerald-400'} text-base"></i>
+                                    <div>
+                                        <p class="font-extrabold ${calc.gap < 0 ? 'text-rose-200' : 'text-emerald-200'}">
+                                            ${calc.gap < 0 ? `Kekurangan Tenaga (${Math.abs(calc.gap)} Orang)` : `Tenaga Mencukupi (+${calc.gap} Orang)`}
+                                        </p>
+                                        <p class="text-[11px] text-slate-300">${calc.gap < 0 ? 'Beban kerja tinggi: prioritaskan asuhan total care & bantuan Katim.' : 'Formasi perawat memadai untuk tingkat ketergantungan pasien saat ini.'}</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-extrabold ${calc.gap < 0 ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'} shrink-0">
+                                    ${calc.gap > 0 ? '+' : ''}${calc.gap} Staf
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="bg-white/10 rounded-2xl p-3.5 text-center border border-white/10">
+                                    <span class="text-[10px] font-bold uppercase text-brand-300 block">SHIFT PAGI</span>
+                                    <span class="text-2xl font-extrabold text-white mt-1 block">${calc.pagi}</span>
+                                    <span class="text-[10px] text-slate-300">Perawat Siaga</span>
+                                </div>
+                                <div class="bg-white/10 rounded-2xl p-3.5 text-center border border-white/10">
+                                    <span class="text-[10px] font-bold uppercase text-amber-300 block">SHIFT SORE</span>
+                                    <span class="text-2xl font-extrabold text-white mt-1 block">${calc.sore}</span>
+                                    <span class="text-[10px] text-slate-300">Perawat Siaga</span>
+                                </div>
+                                <div class="bg-white/10 rounded-2xl p-3.5 text-center border border-white/10">
+                                    <span class="text-[10px] font-bold uppercase text-indigo-300 block">SHIFT MALAM</span>
+                                    <span class="text-2xl font-extrabold text-white mt-1 block">${calc.malam}</span>
+                                    <span class="text-[10px] text-slate-300">Perawat Siaga</span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-[11px] text-slate-300">
+                                <span>Faktor Libur & Cuti (Loss Day): <strong class="text-white">+${calc.lossDay}</strong></span>
+                                <span>Non-Nursing & Administrasi: <strong class="text-white">+${calc.nonNursing}</strong></span>
+                            </div>
+                            <p class="text-[10px] text-brand-200/80 italic">${calc.rumusDesc}</p>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-extrabold text-sm text-brand-950">Riwayat Evaluasi Beban Kerja Ruangan</h4>
+                                <span class="text-xs font-bold text-slate-400">${appData.workloadHistory.length} Catatan</span>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead>
+                                        <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400">
+                                            <th class="py-2.5 px-3">Tanggal</th>
+                                            <th class="py-2.5 px-2">Metode</th>
+                                            <th class="py-2.5 px-2 text-center">Pasien</th>
+                                            <th class="py-2.5 px-2 text-center">Kebutuhan</th>
+                                            <th class="py-2.5 px-2 text-center">Riil</th>
+                                            <th class="py-2.5 px-2 text-center">Gap</th>
+                                            <th class="py-2.5 px-2 text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${appData.workloadHistory.map(h => `
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="py-2.5 px-3 font-bold text-slate-700">${h.tanggal}</td>
+                                                <td class="py-2.5 px-2 font-semibold text-brand-700">${h.metode}</td>
+                                                <td class="py-2.5 px-2 text-center font-bold">${h.totalPasien}</td>
+                                                <td class="py-2.5 px-2 text-center font-extrabold text-brand-950">${h.kebutuhan}</td>
+                                                <td class="py-2.5 px-2 text-center">${h.riil}</td>
+                                                <td class="py-2.5 px-2 text-center">
+                                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${h.gap < 0 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">${h.gap}</span>
+                                                </td>
+                                                <td class="py-2.5 px-2 text-right">
+                                                    <button onclick="deleteWorkloadHistory('${h.id}')" class="text-slate-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveWorkloadEvaluation() {
+            const calc = calculateWorkloadStats(activeWorkloadMethod, wlInputs.minimal, wlInputs.partial, wlInputs.totalCare, wlInputs.riil);
+            appData.workloadHistory.unshift({
+                id: 'w' + Date.now(),
+                tanggal: wlInputs.tanggal,
+                metode: activeWorkloadMethod,
+                minimal: wlInputs.minimal,
+                partial: wlInputs.partial,
+                totalCare: wlInputs.totalCare,
+                totalPasien: calc.totalPasien,
+                kebutuhan: calc.kebutuhan,
+                riil: wlInputs.riil,
+                gap: calc.gap,
+                pagi: calc.pagi,
+                sore: calc.sore,
+                malam: calc.malam,
+                catatan: wlInputs.catatan
+            });
+            saveData();
+            renderCurrentTab();
+            showToast('Evaluasi beban kerja berhasil disimpan ke riwayat ruangan.');
+        }
+
+        function deleteWorkloadHistory(id) {
+            appData.workloadHistory = appData.workloadHistory.filter(w => w.id !== id);
+            saveData();
+            renderCurrentTab();
+            showToast('Catatan riwayat beban kerja dihapus.', 'warning');
+        }
+
+        // =========================================================================
+        // MODUL 4: SUPERVISI KEPERAWATAN
+        // =========================================================================
+        const SUPERVISI_TOPICS = {
+            'Pemasangan & Perawatan Kateter Intravena (Infus)': [
+                'Melakukan kebersihan tangan (Hand Hygiene) sebelum tindakan',
+                'Verifikasi identitas pasien menggunakan 2 parameter (Nama & Tgl Lahir)',
+                'Penerapan teknik aseptik saat insersi & pemasangan transparent dressing',
+                'Pencantuman tanggal & jam pemasangan pada label dressing infus',
+                'Edukasi pasien/keluarga mengenai tanda-tanda awal phlebitis'
+            ],
+            'Komunikasi Efektif SBAR & Timbang Terima Pasien': [
+                'Menyiapkan rekam medis & lembar observasi sebelum timbang terima',
+                'Menyampaikan Situation & Background pasien secara ringkas dan akurat',
+                'Menyampaikan hasil Assessment (TTV, nyeri, risiko jatuh) terkini',
+                'Menyampaikan Recommendation & rencana tindak lanjut jelas',
+                'Melakukan validasi langsung ke samping tempat tidur pasien (Bedside Handover)'
+            ],
+            'Pemberian Obat Prinsip 7 Benar & Double Check High Alert': [
+                'Melakukan verifikasi 7 Benar obat sebelum menyiapkan terapi',
+                'Melakukan double check dengan perawat kedua untuk obat High Alert/LASA',
+                'Mengecek riwayat alergi obat pasien sebelum injeksi',
+                'Menjelaskan fungsi & efek samping obat kepada pasien/keluarga',
+                'Mendokumentasikan jam pemberian & paraf pada catatan pengobatan'
+            ]
+        };
+
+        let selectedSupTopic = Object.keys(SUPERVISI_TOPICS)[0];
+
+        function renderSupervisi() {
+            const avgScore = appData.supervisions.length > 0
+                ? Math.round(appData.supervisions.reduce((acc, s) => acc + s.skor, 0) / appData.supervisions.length)
+                : 0;
+
+            return `
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    ${[
+                        { id: 'jadwal', icon: 'fa-calendar-check', color: 'bg-rose-100 text-rose-600', title: 'Jadwal', desc: 'Agenda Supervisi' },
+                        { id: 'penilaian', icon: 'fa-file-pen', color: 'bg-amber-100 text-amber-600', title: 'Penilaian', desc: 'Form Instrumen' },
+                        { id: 'skor', icon: 'fa-chart-column', color: 'bg-teal-100 text-teal-700', title: 'Skor', desc: `Rata-rata ${avgScore}%` },
+                        { id: 'temuan', icon: 'fa-lightbulb', color: 'bg-yellow-100 text-yellow-600', title: 'Temuan & Rekomendasi', desc: `${appData.supervisions.length} Laporan` },
+                        { id: 'tindaklanjut', icon: 'fa-arrows-rotate', color: 'bg-indigo-100 text-indigo-600', title: 'Tindak Lanjut', desc: 'Integrasi RTL' }
+                    ].map(c => `
+                        <button onclick="activeSupervisiSubTab='${c.id}'; renderCurrentTab()" class="p-4 rounded-2xl border text-left transition flex flex-col items-center text-center gap-2 ${activeSupervisiSubTab === c.id ? 'bg-brand-950 text-white border-brand-900 shadow-md' : 'bg-white hover:bg-teal-50 text-slate-800 border-teal-900/10'}">
+                            <div class="w-10 h-10 rounded-xl ${activeSupervisiSubTab === c.id ? 'bg-white/15 text-brand-300' : c.color} flex items-center justify-center text-lg">
+                                <i class="fa-solid ${c.icon}"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-extrabold">${c.title}</p>
+                                <p class="text-[10px] ${activeSupervisiSubTab === c.id ? 'text-brand-200' : 'text-slate-400'}">${c.desc}</p>
+                            </div>
+                        </button>
+                    `).join('')}
+                </div>
+
+                ${activeSupervisiSubTab === 'penilaian' ? renderSupervisiForm() : ''}
+                ${activeSupervisiSubTab === 'jadwal' ? renderSupervisiJadwal() : ''}
+                ${(activeSupervisiSubTab === 'skor' || activeSupervisiSubTab === 'temuan' || activeSupervisiSubTab === 'tindaklanjut') ? renderSupervisiRekap() : ''}
+            `;
+        }
+
+        function renderSupervisiForm() {
+            const items = SUPERVISI_TOPICS[selectedSupTopic];
+            return `
+                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-teal-900/10 shadow-2xs space-y-5">
+                    <div class="border-b border-slate-100 pb-3">
+                        <h3 class="text-base font-extrabold text-brand-950">Instrumen Penilaian Supervisi Klinis Keperawatan</h3>
+                        <p class="text-xs text-slate-500">Skala penilaian: 1 (Kurang), 2 (Cukup), 3 (Sedang), 4 (Baik), 5 (Sangat Baik / Sesuai SOP 100%).</p>
+                    </div>
+
+                    <form onsubmit="submitSupervisiForm(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Perawat yang Disupervisi</label>
+                                <select id="sup-perawat" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 bg-white">
+                                    ${appData.nurses.filter(n => n.jabatan !== 'Kepala Ruangan').map(n => `<option value="${n.nama}">${n.nama} (${n.pk})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Topik / Tindakan Supervisi</label>
+                                <select id="sup-topik" onchange="selectedSupTopic=this.value; renderCurrentTab()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 bg-white">
+                                    ${Object.keys(SUPERVISI_TOPICS).map(t => `<option value="${t}" ${selectedSupTopic === t ? 'selected' : ''}>${t}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Pelaksanaan</label>
+                                <input type="date" id="sup-tanggal" value="${TODAY_STR}" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2.5 pt-2">
+                            <p class="text-xs font-extrabold text-brand-950">Aspek Observasi SOP:</p>
+                            ${items.map((item, idx) => `
+                                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <span class="text-xs font-semibold text-slate-700">${idx + 1}. ${item}</span>
+                                    <div class="flex items-center gap-1.5 shrink-0">
+                                        ${[1, 2, 3, 4, 5].map(val => `
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="sup_q_${idx}" value="${val}" ${val === 4 ? 'checked' : ''} class="peer sr-only">
+                                                <span class="w-8 h-8 rounded-full border border-slate-300 bg-white peer-checked:bg-brand-950 peer-checked:text-white peer-checked:border-brand-950 flex items-center justify-center text-xs font-extrabold transition">
+                                                    ${val}
+                                                </span>
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Temuan Lapangan / Kekurangan</label>
+                                <textarea id="sup-temuan" rows="2" required placeholder="Catat temuan selama observasi..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs text-slate-800"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Rekomendasi & Arahan Kepala Ruangan</label>
+                                <textarea id="sup-rekomendasi" rows="2" required placeholder="Arahan perbaikan untuk perawat..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs text-slate-800"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="sup-auto-rtl" checked class="w-4 h-4 accent-brand-950 rounded">
+                                Otomatis buat kartu Rencana Tindak Lanjut (RTL) dari rekomendasi ini
+                            </label>
+                            <button type="submit" class="px-5 py-2.5 rounded-full bg-brand-950 hover:bg-brand-900 text-white text-xs font-extrabold flex items-center gap-2 shadow-sm transition">
+                                <i class="fa-solid fa-check-double"></i> Simpan Hasil Supervisi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        function submitSupervisiForm(e) {
+            e.preventDefault();
+            const perawat = document.getElementById('sup-perawat').value;
+            const topik = document.getElementById('sup-topik').value;
+            const tanggal = document.getElementById('sup-tanggal').value;
+            const temuan = document.getElementById('sup-temuan').value.trim();
+            const rekomendasi = document.getElementById('sup-rekomendasi').value.trim();
+            const autoRtl = document.getElementById('sup-auto-rtl').checked;
+
+            const items = SUPERVISI_TOPICS[topik];
+            let totalPoint = 0;
+            const checklist = items.map((item, idx) => {
+                const checked = document.querySelector(`input[name="sup_q_${idx}"]:checked`);
+                const val = checked ? parseInt(checked.value, 10) : 4;
+                totalPoint += val;
+                return { item, nilai: val };
+            });
+
+            const skor = Math.round((totalPoint / (items.length * 5)) * 100);
+            appData.supervisions.unshift({
+                id: 'sup' + Date.now(),
+                tanggal,
+                jadwalBerikutnya: '2026-12-05',
+                perawat,
+                topik,
+                skor,
+                checklist,
+                temuan,
+                rekomendasi,
+                statusTindakLanjut: autoRtl ? 'Sudah Masuk RTL' : 'Dalam Pemantauan'
+            });
+
+            if (autoRtl) {
+                appData.rtls.unshift({
+                    id: 'rtl' + Date.now(),
+                    kategori: 'Pelayanan',
+                    judul: `Tindak Lanjut Supervisi: ${topik}`,
+                    masalah: `${temuan} (Supervisi ${perawat})`,
+                    tindakan: rekomendasi,
+                    eviden: `Lembar supervisi klinis tanggal ${tanggal} (Skor: ${skor}%)`,
+                    progres: 20,
+                    pic: `${perawat} & Katim`,
+                    tenggat: '2026-12-05',
+                    status: 'Dalam Proses'
+                });
+            }
+
+            saveData();
+            activeSupervisiSubTab = 'temuan';
+            renderCurrentTab();
+            showToast(`Hasil supervisi ${perawat} tersimpan (Skor: ${skor}%).`);
+        }
+
+        function renderSupervisiJadwal() {
+            return `
+                <div class="bg-white rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
+                    <h3 class="text-base font-extrabold text-brand-950">Jadwal Terencana Supervisi Klinis Ruang Dahlia</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        ${[
+                            { tgl: 'Senin, 23 Nov 2026', perawat: 'Budi Santoso, A.Md.Kep', topik: 'Pemberian Obat Prinsip 7 Benar & Double Check High Alert', status: 'Terjadwal' },
+                            { tgl: 'Rabu, 25 Nov 2026', perawat: 'Ns. Maya Anggraini, S.Kep', topik: 'Komunikasi Efektif SBAR & Timbang Terima Pasien', status: 'Terjadwal' },
+                            { tgl: 'Jumat, 27 Nov 2026', perawat: 'Rina Kusuma Astuti, A.Md.Kep', topik: 'Pemasangan & Perawatan Kateter Intravena (Infus)', status: 'Terjadwal' }
+                        ].map(j => `
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-extrabold text-brand-700">${j.tgl}</span>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">${j.status}</span>
+                                </div>
+                                <p class="text-sm font-extrabold text-brand-950">${j.perawat}</p>
+                                <p class="text-xs text-slate-600">${j.topik}</p>
+                                <button onclick="openQuickSupervisiFor('${j.perawat}')" class="mt-2 w-full py-2 rounded-full bg-white hover:bg-brand-950 hover:text-white border border-slate-300 text-xs font-bold transition">
+                                    Mulai Penilaian Sekarang
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSupervisiRekap() {
+            return `
+                <div class="bg-white rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-extrabold text-brand-950">Rekapitulasi Skor, Temuan & Tindak Lanjut Supervisi</h3>
+                        <button onclick="selectedReportType='supervisi'; activeSafetySubTab='laporan'; switchTab('keselamatan')" class="px-4 py-2 rounded-full bg-brand-950 text-white text-xs font-bold">
+                            <i class="fa-solid fa-print mr-1"></i> Cetak Laporan Supervisi
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        ${appData.supervisions.map(s => `
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/70 space-y-3">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div>
+                                        <span class="text-[11px] font-bold text-slate-400">${s.tanggal}</span>
+                                        <h4 class="text-sm font-extrabold text-brand-950">${s.perawat} — <span class="text-brand-700">${s.topik}</span></h4>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-extrabold ${s.skor >= 85 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}">Skor: ${s.skor}%</span>
+                                        <span class="px-3 py-1 rounded-full bg-brand-950 text-white text-xs font-bold">${s.statusTindakLanjut}</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                                    <div class="p-3 rounded-xl bg-white border border-slate-200">
+                                        <span class="text-[10px] font-extrabold uppercase text-rose-600 block">Temuan Lapangan:</span>
+                                        <p class="text-slate-700 mt-1">${s.temuan}</p>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-white border border-slate-200">
+                                        <span class="text-[10px] font-extrabold uppercase text-brand-700 block">Rekomendasi Karu:</span>
+                                        <p class="text-slate-700 mt-1">${s.rekomendasi}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================================
+        // MODUL 5: MONITORING INDIKATOR MUTU (INM & UNIT DAHLIA)
+        // =========================================================================
+        let mutuSearchQuery = '';
+
+        function renderMutu() {
+            const filteredMutu = appData.qualityIndicators.filter(q =>
+                q.nama.toLowerCase().includes(mutuSearchQuery.toLowerCase()) ||
+                q.kode.toLowerCase().includes(mutuSearchQuery.toLowerCase())
+            );
+
+            return `
+                <div class="bg-white rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-base font-extrabold text-brand-950 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-simple text-brand-700"></i> Grafik Capaian vs Target Mutu Ruangan (Periode Nov 2026)
+                            </h3>
+                            <p class="text-xs text-slate-500">Perbandingan otomatis persentase capaian numerator/denominator terhadap standar target RS.</p>
+                        </div>
+                        <button onclick="openAddMutuModal()" class="px-4 py-2 rounded-full bg-brand-950 hover:bg-brand-900 text-white text-xs font-bold shrink-0">
+                            + Tambah Indikator Mutu
+                        </button>
+                    </div>
+
+                    <div class="space-y-3.5 pt-2">
+                        ${appData.qualityIndicators.map(q => {
+                            const pct = q.denominator > 0 ? +((q.numerator / q.denominator) * 100).toFixed(2) : 0;
+                            const achieved = q.tipe === 'min' ? pct >= q.target : pct <= q.target;
+                            const barWidth = q.tipe === 'max' ? Math.min(100, pct * 20) : Math.min(100, pct);
+
+                            return `
+                            <div class="space-y-1">
+                                <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                                    <div>
+                                        <span class="font-extrabold text-brand-700">${q.kode}</span>
+                                        <span class="font-bold text-brand-950 ml-1.5">${q.nama}</span>
+                                        <span class="text-[11px] text-slate-400 ml-1">(${q.kategori})</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-[11px]">
+                                        <span class="text-slate-500">Num: <strong>${q.numerator}</strong> / Den: <strong>${q.denominator}</strong></span>
+                                        <span class="text-slate-500">Target: <strong>${q.tipe === 'max' ? '≤' : '≥'}${q.target}%</strong></span>
+                                        <span class="font-extrabold ${achieved ? 'text-emerald-600' : 'text-rose-600'}">${pct}%</span>
+                                    </div>
+                                </div>
+                                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full transition-all duration-500 ${achieved ? 'bg-emerald-500' : 'bg-gradient-to-r from-amber-500 to-rose-500'}" style="width: ${barWidth}%"></div>
+                                </div>
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-5 border border-teal-900/10 shadow-2xs space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <h3 class="text-base font-extrabold text-brand-950">Rincian Data & Analisis Mutu Ruangan</h3>
+                        <div class="relative w-full sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" value="${mutuSearchQuery}" oninput="mutuSearchQuery=this.value; renderCurrentTab()" placeholder="Cari indikator..." class="w-full pl-9 pr-3 py-2 rounded-full border border-slate-300 text-xs outline-none focus:border-brand-700">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-500 uppercase">
+                                    <th class="py-3 px-4">Kode & Indikator Mutu</th>
+                                    <th class="py-3 px-3 text-center">Target</th>
+                                    <th class="py-3 px-3 text-center">Num / Den</th>
+                                    <th class="py-3 px-3 text-center">Capaian</th>
+                                    <th class="py-3 px-3 text-center">Status</th>
+                                    <th class="py-3 px-4">Analisis & Tindak Lanjut</th>
+                                    <th class="py-3 px-3 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                ${filteredMutu.map(q => {
+                                    const pct = q.denominator > 0 ? +((q.numerator / q.denominator) * 100).toFixed(2) : 0;
+                                    const achieved = q.tipe === 'min' ? pct >= q.target : pct <= q.target;
+
+                                    return `
+                                    <tr class="hover:bg-slate-50/80">
+                                        <td class="py-3 px-4 max-w-[230px]">
+                                            <span class="px-2 py-0.5 rounded-full bg-teal-900/10 text-brand-950 font-extrabold text-[10px]">${q.kode}</span>
+                                            <p class="font-bold text-brand-950 mt-1">${q.nama}</p>
+                                            <p class="text-[10px] text-slate-400">${q.kategori}</p>
+                                        </td>
+                                        <td class="py-3 px-3 text-center font-bold text-slate-700">${q.tipe === 'max' ? '≤' : ''}${q.target}%</td>
+                                        <td class="py-3 px-3 text-center font-semibold text-slate-600">${q.numerator} / ${q.denominator}</td>
+                                        <td class="py-3 px-3 text-center font-extrabold ${achieved ? 'text-emerald-600' : 'text-rose-600'}">${pct}%</td>
+                                        <td class="py-3 px-3 text-center">
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${achieved ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+                                                ${achieved ? 'Tercapai' : 'Perlu Evaluasi'}
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-4 max-w-[260px]">
+                                            <p class="text-slate-700 font-medium line-clamp-1">${q.analisis}</p>
+                                            <p class="text-[11px] text-brand-700 italic mt-0.5 line-clamp-1">RTL: ${q.rtl}</p>
+                                        </td>
+                                        <td class="py-3 px-3 text-right">
+                                            <button onclick="openEditMutuModal('${q.id}')" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-brand-950 hover:text-white text-slate-700 font-bold text-[11px] transition">
+                                                <i class="fa-solid fa-pen mr-1"></i> Input
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
         function openEditMutuModal(id) {
             const q = appData.qualityIndicators.find(item => item.id === id);
             if (!q) return;
